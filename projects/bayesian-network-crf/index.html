@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bayesian networks and CRFs for risk and events | A. F. Nurulhamzah</title>
+  <meta name="description" content="Team project: sensitivity analysis on a Bayesian network for car accident risk (pgmpy) and a CRF tagging financial events in text at 0.97 weighted F1.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://anurulhamzah.github.io/projects/bayesian-network-crf/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Risk modeling and event classification: Bayesian networks and CRFs">
+  <meta property="og:description" content="Probabilistic graphical models for risk, and sequence labelling for financial events.">
+  <meta property="og:url" content="https://anurulhamzah.github.io/projects/bayesian-network-crf/">
+  <meta property="og:image" content="https://anurulhamzah.github.io/assets/og-image.png">
+  <meta property="og:image:alt" content="Akhmad Fauzi Nurulhamzah portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ruler" aria-hidden="true"><span class="ruler__flag">1.30 m</span></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../../">A. Fauzi <span>Nurulhamzah</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../../#thesis">Thesis</a>
+        <a href="../../#work" aria-current="page">Projects</a>
+        <a href="../../#about">About</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="paper">
+    <div class="wrap">
+      <p class="crumbs"><a href="../../">Home</a> / Projects / Bayesian network and CRF</p>
+      <h1>Risk modeling and event classification with Bayesian networks and CRFs</h1>
+      <p class="paper__byline">2026. Team of three, Monash University course work. Python, pgmpy, sklearn-crfsuite.</p>
+
+      <dl class="facts facts--paper">
+        <div><dt>Part A</dt><dd>27-node Bayesian network<small>"insurance" benchmark, sensitivity analysis on its probability tables</small></dd></div>
+        <div><dt>Part B</dt><dd>0.97 weighted F1<small>CRF event tagging, held-out test set</small></dd></div>
+        <div><dt>Overfitting check</dt><dd>F1 0.972 / 0.970 / 0.965<small>train / validation / test, second run</small></dd></div>
+      </dl>
+
+      <div class="prose" style="margin-top:2.5rem">
+        <h2><span class="sec">01</span>Part A: how a risk shift propagates through a Bayesian network</h2>
+        <p>The model is the standard "insurance" benchmark network, a directed acyclic graph of 27 nodes linking socioeconomic factors and age to driver traits, accident likelihood, and the costs that follow. The task was a sensitivity analysis: change the conditional probability distributions of chosen nodes to reflect different scenarios, run inference, and trace how the change spreads to related nodes.</p>
+        <p>With pgmpy the team defined scenarios and edited the probability tables to match them: a higher probability of severe accidents, more vehicle theft in dense Indonesian cities, and a more realistic repair-cost table (in the original, a severe accident almost deterministically meant a repair cost in the million range, 97%). For each scenario the team re-ran inference and compared the affected cost nodes with the baseline. The write-up concludes, for example, that a moderate rise in severe accidents significantly increases medical and repair cost exposure, and notes that the benchmark reflects a generic insurance setting that ignores regional and emerging socioeconomic risks.</p>
+
+        <h2><span class="sec">02</span>Part B: tagging financial events in text with a CRF</h2>
+        <p>A Conditional Random Field labels each token of a document as the beginning or continuation of one of four event types (merger, acquisition, earnings, stock movement) or as a non-event token, which makes the task a sequence-labelling problem where neighbouring labels matter. The input features were word and part-of-speech information from a window of neighbouring tokens, plus keyword features for each event type.</p>
+        <p>On the held-out test set the model reached a weighted F1 of 0.974. Token-level accuracy is flattered by the large "other" class, so the team read per-class scores alongside it. A second, systematic comparison of hyperparameter settings split the data into train, validation and test sets and compared F1 across them (0.972, 0.970, 0.965), to check that the model was not simply memorising the training data. The small train-test gap suggests it was not.</p>
+
+        <h2><span class="sec">03</span>My role</h2>
+        <p>This was a team of three. The submitted work is a joint report; the repository history does not break down who wrote which part, so I describe the project as collaborative and have not claimed individual credit for any one section.</p>
+        <p class="verify">Materials: the notebook and report for this project are not published yet.</p>
+        <div class="next"><a href="../climate-causal-analysis/">Previous: climate analysis</a><a href="../food-security-dashboard/">Next: food security dashboard</a></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
+      <span><a href="../../">Back to home</a></span>
+    </div>
+  </footer>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

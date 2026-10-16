@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Akhmad Fauzi Nurulhamzah | Machine learning for forest inventory</title>
+  <meta name="description" content="Master of Data Science (Monash) with 12+ years in forestry and 8+ in internal audit. Thesis on multitask RGB-D tree segmentation and diameter estimation.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://anurulhamzah.github.io/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Akhmad Fauzi Nurulhamzah | Machine learning for forest inventory">
+  <meta property="og:description" content="Applied machine learning and computer vision, built on 12+ years in forestry and internal audit.">
+  <meta property="og:url" content="https://anurulhamzah.github.io/">
+  <meta property="og:image" content="https://anurulhamzah.github.io/assets/og-image.png">
+  <meta property="og:image:alt" content="Akhmad Fauzi Nurulhamzah, with a rainforest scene segmented by the thesis model">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Akhmad Fauzi Nurulhamzah",
+    "url": "https://anurulhamzah.github.io/",
+    "sameAs": ["https://github.com/anurulhamzah", "https://www.linkedin.com/in/anurulhamzah"],
+    "alumniOf": [
+      {"@type": "CollegeOrUniversity", "name": "Monash University Indonesia"},
+      {"@type": "CollegeOrUniversity", "name": "Bogor Agricultural University"}
+    ],
+    "knowsAbout": ["Machine learning", "Computer vision", "Causal inference", "Forest inventory", "Internal audit"]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ruler" aria-hidden="true"><span class="ruler__flag">1.30 m</span></div>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./">A. Fauzi <span>Nurulhamzah</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#thesis">Thesis</a>
+        <a href="#work">Projects</a>
+        <a href="#approach">Approach</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero__grid">
+        <div>
+          <p class="kicker"><b>Akhmad Fauzi Nurulhamzah</b> / Bogor, Indonesia</p>
+          <h1 id="hero-title">Machine learning for forest inventory, grounded in twelve years of forestry.</h1>
+          <p class="lede">My master's thesis trains one RGB-D network to find trees, name their species and estimate trunk diameter from a single under-canopy image.</p>
+          <p>I came to it after more than 12 years in the forestry industry, over 8 of them in internal audit, where the job was to ask what a reported number actually rests on. That habit shapes how I design experiments and report results: controlled comparisons, end-to-end evaluation, and an honest account of what did not work.</p>
+          <div class="actions">
+            <a class="btn" href="#work">See selected projects</a>
+            <a class="btn btn--ghost" href="projects/tree-diameter-estimation/">Read the thesis</a>
+          </div>
+          <p class="linkrow" style="margin-top:1.5rem">
+            <a href="https://github.com/anurulhamzah">GitHub</a>
+            <a href="https://www.linkedin.com/in/anurulhamzah">LinkedIn</a>
+            <a href="mailto:anurulhamzah@gmail.com">anurulhamzah@gmail.com</a>
+          </p>
+        </div>
+
+        <figure class="plate">
+          <div class="plate__pair">
+            <div class="tagline" data-label="INPUT: RGB-D">
+              <img src="assets/img/scene-rgb.webp" width="738" height="415" alt="Ground-level view under a dense rainforest canopy: tree trunks, ferns and vines.">
+            </div>
+            <div class="tagline" data-label="OUTPUT: SPECIES + DBH">
+              <img src="assets/img/scene-prediction.webp" width="738" height="419" alt="The same scene with coloured instance masks over individual trees and labels giving predicted species and trunk diameter in centimetres, for example Umbrella 39 cm and RubberFig 56 cm.">
+            </div>
+          </div>
+          <figcaption>Test-split scene from my thesis model. Labels give predicted species and diameter at breast height; n/a where no valid breast-height row was found. Synthetic imagery (SPREAD dataset).</figcaption>
+        </figure>
+      </div>
+
+      <div class="wrap">
+        <dl class="facts">
+          <div><dt>Education</dt><dd>Master of Data Science<small>Monash University Indonesia, 2024-2026, LPDP scholar</small></dd></div>
+          <div><dt>Thesis grade</dt><dd>High Distinction (80/100)<small>Manuscript in preparation for Ecological Informatics</small></dd></div>
+          <div><dt>Industry</dt><dd>12+ years in forestry<small>8+ years in internal audit</small></dd></div>
+          <div><dt>Thesis result</dt><dd>62.29% AP50, 7.62 cm RMSE<small>Synthetic test split; diameter on detected trees</small></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="thesis" aria-labelledby="thesis-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>01</b> / Research</p>
+          <h2 id="thesis-title">Thesis: one photo instead of a diameter tape</h2>
+        </div>
+
+        <article class="feature">
+          <figure class="figure" style="margin:0">
+            <div class="plate">
+              <img src="assets/img/fig-architecture.webp" width="1414" height="1062" alt="Architecture diagram. RGB and depth form a four-channel input to a FocalNet-L backbone feeding a MaskDINO decoder that outputs species, box and mask. A separate trunk-region head reads the res2 feature at the 1.3 m row and outputs diameter at breast height in centimetres.">
+              <figcaption>Model architecture from the paper: one backbone, a segmentation decoder, and a diameter head that reads the 1.3 m row through a stop-gradient.</figcaption>
+            </div>
+          </figure>
+          <div>
+            <h3>Multitask learning for tree instance segmentation and diameter estimation from RGB-D imagery</h3>
+            <p>Forest inventories turn standing trees into numbers that carbon and policy decisions depend on, and in Indonesia they are still mostly measured by hand. I extended MaskDINO with a FocalNet-L backbone to accept a fourth, depth channel, and added a head that estimates diameter at breast height (DBH) from backbone features at the 1.3 m row. One network returns species-aware instance masks and diameters in a single pass.</p>
+            <div class="keynums">
+              <div><b>62.29%</b><span>test AP50, species-aware segmentation</span></div>
+              <div><b>7.62 cm</b><span>DBH RMSE, end-to-end on own detections</span></div>
+              <div><b>+12.92</b><span>AP50 points from adding depth (controlled)</span></div>
+            </div>
+            <p class="callout"><strong>Read with care.</strong> All data is synthetic (Unreal Engine 5), and diameter is returned for about 27% of eligible trees; most of the shortfall is trees the model never detects. The case study states these limits next to the results.</p>
+            <p class="linkrow">
+              <a href="projects/tree-diameter-estimation/">Read the full case study</a>
+              <a href="https://github.com/anurulhamzah/Tree-Segmentation-and-Diameter-Estimation">Code on GitHub</a>
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>02</b> / Selected projects</p>
+          <h2 id="work-title">Four more projects, with the evidence</h2>
+        </div>
+
+        <ol class="rows">
+          <li class="row">
+            <span class="row__no">01</span>
+            <div>
+              <h3><a href="projects/student-retention/">Student retention and dropout prediction</a></h3>
+              <p>Segmented 4,424 student records, tested risk factors statistically and benchmarked three classifiers with 10-fold cross-validation. XGBoost reached 78.5% test accuracy; the transitional "Enrolled" group is where it is weakest.</p>
+              <ul class="tags"><li class="tag">Python</li><li class="tag">scikit-learn</li><li class="tag">XGBoost</li><li class="tag">KMeans / PCA</li></ul>
+            </div>
+            <p class="meta">2026<br>Individual project<br>Monash course work</p>
+            <a class="row__go" href="projects/student-retention/">Case study</a>
+          </li>
+          <li class="row">
+            <span class="row__no">02</span>
+            <div>
+              <h3><a href="projects/climate-causal-analysis/">Climate change and global agriculture: causal analysis of adaptation strategies</a></h3>
+              <p>Mixed-effects and additive models for climate and input effects on crop yield, a Random Forest predictor, and propensity-score weighting with causal forests to compare adaptation strategies by crop and region.</p>
+              <ul class="tags"><li class="tag">R</li><li class="tag">LME / GAM</li><li class="tag">Causal forests</li><li class="tag">CRISP-DM</li></ul>
+            </div>
+            <p class="meta">2025<br>Individual project<br>Monash course work</p>
+            <a class="row__go" href="projects/climate-causal-analysis/">Case study</a>
+          </li>
+          <li class="row">
+            <span class="row__no">03</span>
+            <div>
+              <h3><a href="projects/bayesian-network-crf/">Risk modeling and event extraction: Bayesian networks and CRFs</a></h3>
+              <p>A Bayesian network for car accident risk with sensitivity analysis on its probability tables, and a Conditional Random Field that tags financial events in text at 0.97 weighted F1, checked for overfitting across splits.</p>
+              <ul class="tags"><li class="tag">Python</li><li class="tag">pgmpy</li><li class="tag">CRF</li></ul>
+            </div>
+            <p class="meta">2026<br>Team of 3<br>Monash course work</p>
+            <a class="row__go" href="projects/bayesian-network-crf/">Case study</a>
+          </li>
+          <li class="row">
+            <span class="row__no">04</span>
+            <div>
+              <h3><a href="projects/food-security-dashboard/">Regional food security and vulnerability dashboard, Indonesia</a></h3>
+              <p>An interactive R Shiny dashboard on food security, poverty and stunting (2018-2024), with geographically weighted regression for local drivers and ARIMA projections to 2029 against national targets.</p>
+              <ul class="tags"><li class="tag">R Shiny</li><li class="tag">GWR</li><li class="tag">ARIMA</li><li class="tag">Five Design Sheets</li></ul>
+            </div>
+            <p class="meta">2025<br>Team of 3<br>Monash course work</p>
+            <a class="row__go" href="projects/food-security-dashboard/">Case study</a>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="approach" aria-labelledby="approach-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>03</b> / Approach</p>
+          <h2 id="approach-title">How I work, shown by the thesis</h2>
+        </div>
+        <div class="approach">
+          <div>
+            <h3>Isolate the variable</h3>
+            <p>Comparing RGB with RGB-D usually mixes two effects: depth, and whether the model starts from pretrained weights. A four-channel stem cannot inherit them. With both arms pretrained, depth looks worth under one AP50 point; with both trained from scratch it is worth 12.92.</p>
+            <p class="proof">Paper, section 3.2 / <a href="projects/tree-diameter-estimation/#results">results</a></p>
+          </div>
+          <div>
+            <h3>Evaluate what would be deployed</h3>
+            <p>Diameter is scored on the model's own detections and masks, not on ground truth. Of 3,034 trees the system failed on, 3,012 were simply never detected, only 22 were misnamed. That says where to work next.</p>
+            <p class="proof">Paper, section 3.5 / <a href="projects/tree-diameter-estimation/#results">distance breakdown</a></p>
+          </div>
+          <div>
+            <h3>Report what did not work</h3>
+            <p>Raising the diameter loss weight cost roughly 5.9% in segmentation loss and gave no measurable diameter gain, so the final model keeps a constant weight. A geometric diameter baseline is reported alongside the learned head, which beats it by about a factor of two.</p>
+            <p class="proof">Paper, sections 3.4 and 3.5.1 / <a href="projects/tree-diameter-estimation/#limits">limitations</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>04</b> / About</p>
+          <h2 id="about-title">From forest operations and audit to machine learning</h2>
+        </div>
+        <div class="about">
+          <div>
+            <p>I started in forestry planning and environmental work in 2010: annual work plans, GIS mapping of harvesting and planting blocks, and the documentation behind Indonesia's forest sustainability and timber-legality certifications. From 2013 I worked in internal audit across four forestry operating units, testing whether internal controls and risk management matched regulations and procedures, and leading audit teams of two to three.</p>
+            <p>Moving into data science in 2023 and completing a Master of Data Science at Monash University Indonesia in 2026 extended that work rather than replacing it. Audit taught me to separate a claim from the evidence for it. Forestry taught me what an inventory number is used for and how field conditions distort it. Machine learning gave me tools to automate the measurement itself.</p>
+            <p>I am looking for applied machine learning, computer vision and analytics roles where domain understanding of forests, environmental data, or controls and risk is an advantage.</p>
+          </div>
+          <aside aria-label="Background at a glance">
+            <h3>What each background contributes</h3>
+            <ul class="stack-list">
+              <li><b>Forestry operations</b>Inventory, planning surveys, GIS, certification records.</li>
+              <li><b>Internal audit</b>Risk assessment, internal controls, regulatory compliance, lead auditor.</li>
+              <li><b>Data science</b>Deep learning, causal inference, statistical modelling, dashboards.</li>
+            </ul>
+            <h3>Languages</h3>
+            <p style="margin:0">Indonesian (native), English (IELTS 6.5)</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="skills" aria-labelledby="skills-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>05</b> / Skills</p>
+          <h2 id="skills-title">Skills, with where they are used</h2>
+        </div>
+        <dl class="skills">
+          <div>
+            <dt>Machine learning and computer vision</dt>
+            <dd>
+              <p>PyTorch, Detectron2, scikit-learn, XGBoost, deep learning, instance segmentation, multitask learning, Bayesian networks (pgmpy), Conditional Random Fields, HPC/SLURM model training.</p>
+              <p class="shown">Used in: <a href="projects/tree-diameter-estimation/">thesis</a>, <a href="projects/student-retention/">student retention</a>, <a href="projects/bayesian-network-crf/">Bayesian network and CRF</a></p>
+            </dd>
+          </div>
+          <div>
+            <dt>Programming and data analysis</dt>
+            <dd>
+              <p>Python, R, SQL (Google BigQuery), data wrangling, exploratory data analysis, hypothesis testing, regression, clustering, big data processing.</p>
+              <p class="shown">Used in: <a href="projects/student-retention/">student retention</a>, <a href="projects/climate-causal-analysis/">climate analysis</a></p>
+            </dd>
+          </div>
+          <div>
+            <dt>Statistics and causal inference</dt>
+            <dd>
+              <p>Propensity score weighting, causal forests, linear mixed-effects models, generalized additive models.</p>
+              <p class="shown">Used in: <a href="projects/climate-causal-analysis/">climate analysis</a></p>
+            </dd>
+          </div>
+          <div>
+            <dt>Visualization and business intelligence</dt>
+            <dd>
+              <p>Tableau, Looker Studio, R Shiny.</p>
+              <p class="shown">Used in: <a href="projects/food-security-dashboard/">food security dashboard</a>, <a href="#earlier">earlier case studies</a></p>
+            </dd>
+          </div>
+          <div>
+            <dt>Geospatial analysis</dt>
+            <dd>
+              <p>ArcGIS, geographically weighted regression.</p>
+              <p class="shown">Used in: <a href="projects/food-security-dashboard/">food security dashboard</a>, <a href="#experience">planning survey work</a></p>
+            </dd>
+          </div>
+          <div>
+            <dt>Forestry, risk and internal audit</dt>
+            <dd>
+              <p>Risk assessment, internal controls, regulatory compliance, forest certification documentation (PHPL, PHTL, VLK, TLTV), AMDAL monitoring, project management, stakeholder engagement.</p>
+              <p class="shown">Used in: <a href="#experience">professional experience</a></p>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section" id="experience" aria-labelledby="exp-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>06</b> / Experience</p>
+          <h2 id="exp-title">Employment, study and training</h2>
+        </div>
+
+        <h3 class="subhead">Employment</h3>
+        <ol class="timeline">
+          <li>
+            <time>Dec 2013 - Oct 2022</time>
+            <div>
+              <span class="type">Employment</span>
+              <h3>Internal Auditor</h3>
+              <p class="org">Arara Abadi Indonesia (Djarum Forestry)</p>
+              <ul>
+                <li>Ran recurring internal audits, about one to two a month, across four forestry operating units (PT SPA, PT DML, PT SRL, PT WHP), assessing internal control and risk management against regulations and SOPs.</li>
+                <li>Lead Auditor on selected engagements, directing teams of two to three through examinations and tests across Operations, Human Resources and Financial Information.</li>
+                <li>Delivered findings and improvement recommendations to site management.</li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <time>Jan 2013 - Nov 2013<br>(concurrent)</time>
+            <div>
+              <span class="type">Employment</span>
+              <h3>Continuous Improvement Specialist</h3>
+              <p class="org">Satria Perkasa Agung (Sinarmas Forestry)</p>
+              <ul>
+                <li>Monitored adherence to SOPs and tracked monthly district performance; documented information for improvement projects.</li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <time>May 2010 - Nov 2013</time>
+            <div>
+              <span class="type">Employment</span>
+              <h3>District Environmental Officer and Planning Survey Specialist</h3>
+              <p class="org">Satria Perkasa Agung (Sinarmas Forestry)</p>
+              <ul>
+                <li>Supported AMDAL (environmental impact assessment) monitoring and conservation operations under the Conservation Management Plan.</li>
+                <li>Maintained documentation for forest sustainability and timber-legality certifications (PHPL, PHTL, VLK, TLTV), keeping district records audit-ready.</li>
+                <li>Prepared work plans and budgets for the Planning Survey Department, and tracked the district operational plan against planning indicators.</li>
+                <li>Produced GIS maps for the Annual Work Plan (RKT), delineating harvesting and planting blocks, and mapped planting and harvesting measurements with operational teams.</li>
+              </ul>
+            </div>
+          </li>
+        </ol>
+
+        <h3 class="subhead">Education and training</h3>
+        <ol class="timeline">
+          <li>
+            <time>2024 - 2026</time>
+            <div>
+              <span class="type">Master's degree and academic research</span>
+              <h3>Master of Data Science</h3>
+              <p class="org">Monash University Indonesia. LPDP scholarship awardee. WAM 71.9/100.</p>
+              <ul>
+                <li>Thesis grade High Distinction (80/100), supervised by Dr. Muhamad Risqi Utama Saputra. See the <a href="projects/tree-diameter-estimation/">thesis case study</a>.</li>
+                <li>Coursework: data exploration and visualisation, data wrangling, statistical data modelling, applied data analysis, data processing for big data, databases, Python programming, IT research methods, project management.</li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <time>Jan - Apr 2023</time>
+            <div>
+              <span class="type">Non-formal training</span>
+              <h3>Full Stack Data Analytics</h3>
+              <p class="org">RevoU. Cumulative score 100/100.</p>
+              <ul><li>SQL, Python, Excel, Tableau and Looker Studio, hypothesis testing and regression.</li></ul>
+            </div>
+          </li>
+          <li>
+            <time>2004 - 2009</time>
+            <div>
+              <span class="type">Bachelor's degree</span>
+              <h3>Bachelor of Forestry Science</h3>
+              <p class="org">Bogor Agricultural University. GPA 3.09.</p>
+              <ul><li>Thesis on occupational health and safety in timber harvesting at a community forest cooperative.</li></ul>
+            </div>
+          </li>
+        </ol>
+
+        <h3 class="subhead">Certificates</h3>
+        <ul class="small" style="max-width:60ch;padding-left:1.1rem">
+          <li>IRCA Quality Management System Lead Auditor/Auditor Training Course, TUV Rheinland (Nov 2017)</li>
+          <li>Comprehensive Risk Based Audit, Mutual Resources (Oct 2015)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="earlier" aria-labelledby="earlier-title">
+      <div class="wrap">
+        <div class="section__head">
+          <p class="section__no"><b>07</b> / Earlier work</p>
+          <h2 id="earlier-title">Analytics case studies, 2023</h2>
+        </div>
+        <p>Before the master's degree I built business-analytics case studies in spreadsheets, SQL, Python, Tableau and Looker Studio. They are collected in a separate portfolio:</p>
+        <ul style="max-width:60ch;padding-left:1.1rem">
+          <li>Divvy bike sharing: time-series and root-cause analysis</li>
+          <li>Passenger satisfaction analysis for an airline: regression, clustering, classification</li>
+          <li>Samba e-commerce dashboards in Tableau and Looker Studio</li>
+          <li>HR attrition analysis</li>
+          <li>Property listings in Kuala Lumpur: regression</li>
+          <li>Fast-food marketing campaign: A/B testing</li>
+          <li>The Look e-commerce: growth and retention analysis in SQL</li>
+        </ul>
+        <p class="linkrow"><a href="https://bit.ly/anurulhamzah-portofolio">Open the 2023 analytics portfolio</a></p>
+      </div>
+    </section>
+
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="wrap contact">
+        <div>
+          <p class="section__no"><b>08</b> / Contact</p>
+          <h2 id="contact-title" style="margin-top:1rem">If the problem involves forests, measurement or risk, let's talk.</h2>
+          <p style="margin-top:1.25rem">Open to applied machine learning, computer vision, data science and analytics roles. Email is the fastest way to reach me.</p>
+        </div>
+        <ul class="contact__list">
+          <li><span>Email</span><a href="mailto:anurulhamzah@gmail.com">anurulhamzah@gmail.com</a></li>
+          <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/anurulhamzah">in/anurulhamzah</a></li>
+          <li><span>GitHub</span><a href="https://github.com/anurulhamzah">anurulhamzah</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
+      <span>Static site, no trackers. <a href="https://github.com/anurulhamzah/anurulhamzah.github.io">Source</a></span>
+    </div>
+  </footer>
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

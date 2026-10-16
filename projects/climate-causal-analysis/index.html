@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Climate change and agriculture: causal analysis | A. F. Nurulhamzah</title>
+  <meta name="description" content="Mixed-effects and additive models, Random Forest prediction, propensity-score weighting and causal forests to compare climate-adaptation strategies in agriculture, built in R.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://anurulhamzah.github.io/projects/climate-causal-analysis/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Climate change and global agriculture: causal analysis of adaptation strategies">
+  <meta property="og:description" content="From yield modelling to which adaptation strategies work best by crop and region.">
+  <meta property="og:url" content="https://anurulhamzah.github.io/projects/climate-causal-analysis/">
+  <meta property="og:image" content="https://anurulhamzah.github.io/assets/og-image.png">
+  <meta property="og:image:alt" content="Akhmad Fauzi Nurulhamzah portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ruler" aria-hidden="true"><span class="ruler__flag">1.30 m</span></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../../">A. Fauzi <span>Nurulhamzah</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../../#thesis">Thesis</a>
+        <a href="../../#work" aria-current="page">Projects</a>
+        <a href="../../#about">About</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="paper">
+    <div class="wrap">
+      <p class="crumbs"><a href="../../">Home</a> / Projects / Climate and agriculture</p>
+      <h1>Climate change and global agriculture: which adaptation strategies work, and where</h1>
+      <p class="paper__byline">2025. Individual project, Monash University course work. R, CRISP-DM.</p>
+
+      <dl class="facts facts--paper">
+        <div><dt>Data</dt><dd>Synthetic panel, 1990-2024<small>checked against EDGAR, NOAA and FAOSTAT patterns</small></dd></div>
+        <div><dt>Outcomes</dt><dd>Crop yield, economic impact<small>economic impact in USD million</small></dd></div>
+        <div><dt>Strategies compared</dt><dd>Four<small>crop rotation, water management, drought-resistant crops, organic farming</small></dd></div>
+      </dl>
+
+      <div class="prose" style="margin-top:2.5rem">
+        <h2><span class="sec">01</span>Question</h2>
+        <p>Climate change threatens crop yields, but farmers respond with different adaptation strategies, and whether a strategy works probably depends on the crop and the region. The project moves from describing the relationship between climate, inputs and yield, to predicting yield, to asking which strategy is most effective in which context.</p>
+        <p>The dataset is synthetic, and the report says so. As a check, its trends were compared with authoritative sources: CO2 levels with EDGAR, temperature patterns with NOAA climate records, and yield patterns with FAOSTAT. The overall patterns were similar. Conclusions are therefore about the method on this dataset, not findings about real farms.</p>
+
+        <h2><span class="sec">02</span>Method</h2>
+        <ul>
+          <li><strong>Preparation.</strong> Removed 17 rows (about 0.19%) with physically impossible negative pesticide and fertilizer values, and grouped countries into climate zones to reduce the cardinality of the country variable.</li>
+          <li><strong>Exploration.</strong> Fertilizer use and yield correlate at 0.73, as do yield and economic impact, while climate variables alone show only weak linear correlation with yield. That pointed to non-linear effects and justified a GAM.</li>
+          <li><strong>Inference.</strong> Linear mixed-effects models (lme4), with random intercepts for crop and for region nested in country, because observations are hierarchical. Generalized additive models (mgcv) to show non-linear effects of temperature, fertilizer, pesticide, CO2, irrigation and soil.</li>
+          <li><strong>Prediction.</strong> Random Forest in tidymodels with an 80/20 split and 5-fold cross-validation for tuning, checked with residual plots and variable importance.</li>
+          <li><strong>Causal analysis.</strong> Because strategies are not randomly assigned, multinomial propensity-score weighting (with robust standard errors) estimates average treatment effects, and causal forests (grf) estimate how effects differ by crop and region.</li>
+        </ul>
+
+        <h2><span class="sec">03</span>What this shows</h2>
+        <p>The project is a complete workflow from data cleaning to heterogeneous treatment effects, with each modelling choice justified in the analysis: why mixed effects, why GAMs, why weighting. Treatment-effect estimates from observational data depend on unconfoundedness assumptions that cannot be verified here, and the data is synthetic, so I present this as a demonstration of method rather than as evidence about which strategy to adopt.</p>
+
+        <p class="verify">Materials: the code (R Markdown) and report for this project are not published yet.</p>
+        <div class="next"><a href="../student-retention/">Previous: student retention</a><a href="../bayesian-network-crf/">Next: Bayesian network and CRF</a></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
+      <span><a href="../../">Back to home</a></span>
+    </div>
+  </footer>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

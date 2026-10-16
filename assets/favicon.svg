@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Ruler with survey flag">
+  <rect width="32" height="32" fill="#0f1b15"/>
+  <g stroke="#e9efe6" stroke-width="1.4">
+    <path d="M4 5h9M4 11h6M4 17h9M4 23h6M4 29h9"/>
+  </g>
+  <path d="M13 9h16l-4 4 4 4H13z" fill="#ff6b98"/>
+</svg>

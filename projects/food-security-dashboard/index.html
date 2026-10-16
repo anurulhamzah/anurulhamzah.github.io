@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Indonesia food security dashboard | A. F. Nurulhamzah</title>
+  <meta name="description" content="Team project: an interactive R Shiny dashboard on food security, poverty and stunting in Indonesia, with geographically weighted regression and ARIMA projections to 2029.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://anurulhamzah.github.io/projects/food-security-dashboard/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Regional food security and vulnerability dashboard, Indonesia">
+  <meta property="og:description" content="An interactive dashboard for policy analysts: trends, local drivers and projections against national targets.">
+  <meta property="og:url" content="https://anurulhamzah.github.io/projects/food-security-dashboard/">
+  <meta property="og:image" content="https://anurulhamzah.github.io/assets/og-image.png">
+  <meta property="og:image:alt" content="Akhmad Fauzi Nurulhamzah portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ruler" aria-hidden="true"><span class="ruler__flag">1.30 m</span></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../../">A. Fauzi <span>Nurulhamzah</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../../#thesis">Thesis</a>
+        <a href="../../#work" aria-current="page">Projects</a>
+        <a href="../../#about">About</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="paper">
+    <div class="wrap">
+      <p class="crumbs"><a href="../../">Home</a> / Projects / Food security dashboard</p>
+      <h1>Regional food security and vulnerability dashboard, Indonesia (2018-2024)</h1>
+      <p class="paper__byline">2025. Team of three, Monash University course work. R Shiny, geographically weighted regression, ARIMA.</p>
+
+      <dl class="facts facts--paper">
+        <div><dt>Period</dt><dd>2018-2024<small>regency and city level, plus national GFSI indicators</small></dd></div>
+        <div><dt>Indicators</dt><dd>Food security index, stunting, undernourishment, poverty</dd></div>
+        <div><dt>Projections</dt><dd>To 2029<small>against national RPJMN 2025-2029 targets</small></dd></div>
+      </dl>
+
+      <div class="prose" style="margin-top:2.5rem">
+        <h2><span class="sec">01</span>Who it is for and what it answers</h2>
+        <p>The dashboard is designed for policymakers, regional planners, public-health officials and analysts working on food security. It was built around three questions: which regions are priorities and what drives their vulnerability, how have trends changed and how do they compare globally, and which regions are on track to meet national targets (a food security index of at least 82 and undernourishment of at most 4.41%, from the national medium-term plan).</p>
+
+        <h2><span class="sec">02</span>Three tabs, three analytical tasks</h2>
+        <ul>
+          <li><strong>General overview.</strong> 2018-2024 trajectories for the food security index, stunting, undernourishment and poverty, with interactive maps and multi-series trend lines.</li>
+          <li><strong>Policy focus.</strong> Geographically weighted regression, shown as a diverging map, to find which socioeconomic variables are locally significant drivers of food security in each area rather than assuming one national relationship.</li>
+          <li><strong>Future projections.</strong> ARIMA forecasts of the food security index and undernourishment through 2029, flagging provinces at risk of missing the national targets.</li>
+        </ul>
+
+        <h2><span class="sec">03</span>Design and data decisions</h2>
+        <p>The interface follows the Five Design Sheets framework, from raw data through to the final layout, so that each tab has a clear purpose and a consistent visual hierarchy for different audiences. The team fixed problems found during testing and cross-checked them in Shiny: zeros in the stunting and undernourishment data were recoded as missing values, with conditional rendering so that charts do not average over missing data, and a projection chart title and axis range that disagreed were corrected.</p>
+
+        <p class="verify">Materials: the Shiny app code and reports for this project are not published yet, and I have no confirmed public URL for a hosted version, so there is no live demo link here. This was a team project; the report does not attribute individual contributions.</p>
+        <div class="next"><a href="../bayesian-network-crf/">Previous: Bayesian network and CRF</a><a href="../../#work">Back to projects</a></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
+      <span><a href="../../">Back to home</a></span>
+    </div>
+  </footer>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

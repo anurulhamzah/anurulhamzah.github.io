@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student retention and dropout prediction | A. F. Nurulhamzah</title>
+  <meta name="description" content="Student dropout prediction: KMeans and PCA segmentation, statistical tests, and Logistic Regression, Random Forest and XGBoost with 10-fold cross-validation.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://anurulhamzah.github.io/projects/student-retention/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Student retention and dropout prediction">
+  <meta property="og:description" content="A multi-model approach to predicting student dropout, with an honest look at where it is weakest.">
+  <meta property="og:url" content="https://anurulhamzah.github.io/projects/student-retention/">
+  <meta property="og:image" content="https://anurulhamzah.github.io/assets/og-image.png">
+  <meta property="og:image:alt" content="Akhmad Fauzi Nurulhamzah portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ruler" aria-hidden="true"><span class="ruler__flag">1.30 m</span></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../../">A. Fauzi <span>Nurulhamzah</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../../#thesis">Thesis</a>
+        <a href="../../#work" aria-current="page">Projects</a>
+        <a href="../../#about">About</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="paper">
+    <div class="wrap">
+      <p class="crumbs"><a href="../../">Home</a> / Projects / Student retention</p>
+      <h1>Predicting student dropout with a multi-model approach</h1>
+      <p class="paper__byline">2026. Individual project, Monash University course work. Python, scikit-learn, XGBoost.</p>
+
+      <dl class="facts facts--paper">
+        <div><dt>Records</dt><dd>4,424<small>36 features, one higher-education institution</small></dd></div>
+        <div><dt>Best model</dt><dd>XGBoost<small>78.5% test accuracy (885 held-out students)</small></dd></div>
+        <div><dt>Dropout class</dt><dd>0.79 recall, 0.80 F1<small>Enrolled class is weakest: 0.37 recall</small></dd></div>
+      </dl>
+
+      <div class="prose" style="margin-top:2.5rem">
+        <h2><span class="sec">01</span>Question</h2>
+        <p>Which factors are associated with student dropout, can students be grouped meaningfully for targeted retention programmes, and how well can dropout be predicted early enough to act on? The data is the public UCI "predict students' dropout and academic success" dataset, collected at a Portuguese higher-education institution; the three outcomes are Dropout, Enrolled and Graduate.</p>
+
+        <h2><span class="sec">02</span>Method</h2>
+        <ul>
+          <li><strong>Exploration and testing.</strong> Distribution and outlier checks, then chi-square tests for categorical variables and ANOVA for numeric ones, to find which variables relate to outcome rather than assuming it.</li>
+          <li><strong>Segmentation.</strong> KMeans produced three student personas, and PCA produced an "academic intensity" feature, both added as model inputs.</li>
+          <li><strong>Models.</strong> Logistic Regression as a baseline, Random Forest, and XGBoost (tree depth limited to 5 to restrain overfitting), compared with 10-fold cross-validation and then once on a held-out test set. The notebook also runs a paired t-test on the fold scores to compare the baseline with XGBoost.</li>
+        </ul>
+
+        <h2><span class="sec">03</span>Results</h2>
+        <div class="table-scroll">
+          <table class="datatable">
+            <caption>Cross-validation and hold-out accuracy</caption>
+            <thead><tr><th>Model</th><th>10-fold CV accuracy</th><th>Test accuracy</th><th>Test weighted F1</th></tr></thead>
+            <tbody>
+              <tr><td>Logistic Regression (baseline)</td><td>0.759 &plusmn; 0.018</td><td>0.774</td><td>0.758</td></tr>
+              <tr><td>Random Forest</td><td>0.763 &plusmn; 0.021</td><td>0.774</td><td>0.753</td></tr>
+              <tr><td>XGBoost</td><td>0.774 &plusmn; 0.025</td><td>0.785</td><td>0.771</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>XGBoost was best on every metric, but the margin over the linear baseline is about one percentage point of accuracy, and it is comparable to the fold-to-fold spread. On the hold-out set it finds 79% of eventual dropouts (F1 0.80) and 93% of graduates (F1 0.87). It struggles with students still enrolled (recall 0.37, F1 0.45), who sit between the other two groups.</p>
+        <p>The strongest predictors were the number of curricular units approved and whether tuition fees were up to date, followed by units enrolled and scholarship status: academic progress and financial stability.</p>
+
+        <h2><span class="sec">04</span>Limitations</h2>
+        <ul>
+          <li>One institution's data; nothing here shows the model transfers to other universities or years.</li>
+          <li>Because units approved is the top predictor, much of the signal arrives only after a student has already struggled. It supports intervention only where those features are available early.</li>
+          <li>The report includes an ethical reflection on using predictions about individual students; any deployment would need that discussion first.</li>
+        </ul>
+
+        <p class="verify">Materials: the code and report for this project are not published yet.</p>
+        <div class="next"><a href="../tree-diameter-estimation/">Previous: thesis</a><a href="../climate-causal-analysis/">Next: climate analysis</a></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
+      <span><a href="../../">Back to home</a></span>
+    </div>
+  </footer>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

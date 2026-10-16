@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tree diameter estimation from RGB-D | A. F. Nurulhamzah</title>
+  <meta name="description" content="Master's thesis: one multitask network that segments trees, names species and estimates trunk diameter from RGB-D images. 62.29% AP50, 7.62 cm RMSE.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://anurulhamzah.github.io/projects/tree-diameter-estimation/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Multitask learning for tree instance segmentation and diameter estimation from RGB-D imagery">
+  <meta property="og:description" content="One network finds trees, names species and estimates trunk diameter. Master's thesis, Monash University Indonesia, 2026.">
+  <meta property="og:url" content="https://anurulhamzah.github.io/projects/tree-diameter-estimation/">
+  <meta property="og:image" content="https://anurulhamzah.github.io/assets/og-image.png">
+  <meta property="og:image:alt" content="Rainforest scene segmented by the thesis model">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ruler" aria-hidden="true"><span class="ruler__flag">1.30 m</span></div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../../">A. Fauzi <span>Nurulhamzah</span></a>
+      <nav class="nav" aria-label="Primary">
+        <a href="../../#thesis" aria-current="page">Thesis</a>
+        <a href="../../#work">Projects</a>
+        <a href="../../#about">About</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="paper">
+    <div class="wrap">
+      <p class="crumbs"><a href="../../">Home</a> / Research / Thesis</p>
+      <h1>Multitask learning for tree instance segmentation and diameter estimation from RGB-D imagery</h1>
+      <p class="paper__byline">Akhmad Fauzi Nurulhamzah, Muhamad Risqi Utama Saputra (supervisor)<br>Monash University Indonesia. Master's thesis, 2026. Grade: High Distinction (80/100).<br>Manuscript in preparation for submission to <em>Ecological Informatics</em> (as of September 2026).</p>
+      <p class="linkrow">
+        <a href="https://github.com/anurulhamzah/Tree-Segmentation-and-Diameter-Estimation">Code (GitHub)</a>
+        <a href="https://github.com/anurulhamzah/Tree-Segmentation-and-Diameter-Estimation/blob/main/Multitask%20Learning%20for%20Forestry.pdf">Extended summary of the paper (PDF)</a>
+        <a href="https://doi.org/10.1016/j.ecoinf.2025.103085">SPREAD dataset (Feng et al., 2025)</a>
+      </p>
+
+      <dl class="facts facts--paper">
+        <div><dt>Test AP50</dt><dd>62.29%<small>species-aware instance segmentation</small></dd></div>
+        <div><dt>Diameter RMSE</dt><dd>7.62 cm<small>end-to-end, on detected trees</small></dd></div>
+        <div><dt>Effect of depth</dt><dd>+12.92 AP50 points<small>both arms trained from scratch</small></dd></div>
+        <div><dt>Data</dt><dd>Synthetic<small>Unreal Engine 5 renders (SPREAD)</small></dd></div>
+      </dl>
+
+      <div class="paper__grid">
+        <nav class="toc" aria-label="On this page">
+          <ol>
+            <li><a href="#abstract">Summary</a></li>
+            <li><a href="#problem">The inventory problem</a></li>
+            <li><a href="#model">The model</a></li>
+            <li><a href="#data">Data and design</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#limits">Limitations</a></li>
+            <li><a href="#relevance">Why it matters</a></li>
+            <li><a href="#role">My role and code</a></li>
+          </ol>
+        </nav>
+
+        <div class="prose">
+          <h2 id="abstract"><span class="sec">00</span>Summary</h2>
+          <p class="abstract">Can one photograph, taken by a field crew standing under the canopy, replace a diameter tape and a species guidebook? I trained a single RGB-D network that segments individual trees, classifies their species and estimates diameter at breast height (DBH), and measured honestly where it works and where it does not.</p>
+          <p>The final model reaches 62.29% test AP50 for species-aware segmentation, with no measurable segmentation cost from adding the diameter task. Evaluated end-to-end on its own detections, it returns a diameter for 27.1% of eligible test trees (1,690 of 6,233) with a 7.62 cm RMSE. In a controlled comparison where both models are trained from scratch and differ only in channel count, adding depth raises AP50 by 12.92 points. Detection recall falls with camera distance, from 82.4% within 5 m to 34.5% beyond 30 m, while species accuracy among detected trees stays at 98.9% or higher.</p>
+
+          <h2 id="problem"><span class="sec">01</span>The inventory problem</h2>
+          <p>Forest inventory turns standing trees into per-tree records, chiefly species and trunk diameter, that carbon stock estimates, biodiversity indices and timber yield models are built from. DBH enters allometric biomass equations directly, so an error in diameter propagates into every downstream carbon figure. In Indonesian forests and agroforestry systems these records are still mostly collected by hand with diameter tapes. Cost scales with the number of trees rather than the area surveyed, and species identification needs skilled labour.</p>
+          <p>Terrestrial laser scanning recovers trunk geometry precisely but costs too much for routine inventory in much of the region. Image-based methods use cheap cameras, but most work close to a single trunk that the operator has chosen. The harder setting is a whole scene seen from where a field crew actually stands: trees occlude each other, and apparent size varies by more than an order of magnitude with distance. This thesis asks whether one network can deliver both measurements there, and where it fails.</p>
+
+          <h2 id="model"><span class="sec">02</span>The model</h2>
+          <p>The architecture builds on MaskDINO, a query-based instance segmentation model, with a FocalNet-L backbone. The input convolution is widened from three to four channels so that depth enters as an input. A second head estimates diameter from backbone features at the image row that corresponds to breast height.</p>
+          <figure class="figure">
+            <div class="plate plate--scroll" tabindex="0" role="group" aria-label="Architecture diagram (scrolls sideways on narrow screens)">
+              <img src="../../assets/img/fig-architecture.webp" width="1414" height="1062" loading="lazy" alt="Architecture diagram. RGB and depth form a four-channel input to a FocalNet-L backbone producing four feature levels, res2 to res5. A pixel decoder and nine transformer decoder layers with 300 queries and 100 denoising queries output 13 species classes, boxes and masks. A trunk-region head reads the res2 feature at the 1.3 metre row, through a detached copy, and outputs diameter at breast height in centimetres.">
+            </div>
+            <figcaption><b>Figure 1.</b> Architecture of the final model, from the paper. The diameter head reads the same <code>res2</code> feature as the segmentation branch through a stop-gradient, so its loss never reshapes the backbone. Depth enters twice: as an input channel, and as the geometry that converts pixel width into physical width.</figcaption>
+          </figure>
+          <p>The diameter head uses depth to find the image row whose back-projected height is closest to 1.3 m, isolates the trunk columns nearest the camera in that row, and computes a purely geometric diameter from pixel width and distance. That value is both reported as a baseline and supplied to a small network that regresses the final diameter together with learned features and the species. The geometric baseline alone is about a factor of two worse than the learned head.</p>
+
+          <h2 id="data"><span class="sec">03</span>Data and experimental design</h2>
+          <p>Training and evaluation use SPREAD, a synthetic below-canopy dataset rendered in Unreal Engine 5 (Feng, She and Keshav, 2025). A virtual camera about 2 m above ground looks laterally into plantation and rainforest scenes, giving a colour image, a per-pixel depth map, instance masks, a species label and, for a subset, a recorded DBH. Thirteen species are used for segmentation; diameter is supervised on the eleven that carry recorded DBH. The split is by rendered scene, not by image, so the same tree never appears on both sides. The test split has 7,925 annotated tree instances. I trained and evaluated on a SLURM-managed HPC cluster with NVIDIA L40S GPUs.</p>
+          <h3>Controlling for pretraining</h3>
+          <p>RGB and RGB-D are usually compared with the RGB model initialised from ImageNet and the RGB-D model trained from scratch, because a four-channel stem cannot inherit three-channel weights. That mixes depth with initialisation. In the paper, pretraining raised the RGB model's AP50 by 4.29 points but lowered the RGB-D model's, because ImageNet features that help a three-channel input work against a four-channel one. A comparison with both arms pretrained would report a depth advantage of only 0.91 points. Only with pretraining removed from both arms does the 12.92-point effect appear, so every depth comparison here trains both arms from scratch and varies only the channel count.</p>
+
+          <h2 id="results"><span class="sec">04</span>Results</h2>
+          <h3>Depth helps in every MaskDINO configuration</h3>
+          <figure class="figure chart" tabindex="0" role="group" aria-label="Chart (scrolls sideways on narrow screens)">
+            <!-- chart:depth -->
+<svg viewBox="0 0 720 346" role="img" aria-labelledby="t-depth d-depth">
+<title id="t-depth">Effect of adding a depth channel on AP50</title>
+<desc id="d-depth">Dumbbell chart. For each backbone, AP50 without depth and with depth, both trained from scratch. Depth adds between 9.68 and 16.93 points for the six MaskDINO backbones and 0.32 points for the Mask R-CNN reference.</desc>
+<line class="s-rule" x1="190.0" x2="190.0" y1="36" y2="306" stroke-width="1"/>
+<text x="190.0" y="322" text-anchor="middle">0</text>
+<line class="s-rule" x1="258.3" x2="258.3" y1="36" y2="306" stroke-width="1"/>
+<text x="258.3" y="322" text-anchor="middle">10</text>
+<line class="s-rule" x1="326.7" x2="326.7" y1="36" y2="306" stroke-width="1"/>
+<text x="326.7" y="322" text-anchor="middle">20</text>
+<line class="s-rule" x1="395.0" x2="395.0" y1="36" y2="306" stroke-width="1"/>
+<text x="395.0" y="322" text-anchor="middle">30</text>
+<line class="s-rule" x1="463.3" x2="463.3" y1="36" y2="306" stroke-width="1"/>
+<text x="463.3" y="322" text-anchor="middle">40</text>
+<line class="s-rule" x1="531.7" x2="531.7" y1="36" y2="306" stroke-width="1"/>
+<text x="531.7" y="322" text-anchor="middle">50</text>
+<line class="s-rule" x1="600.0" x2="600.0" y1="36" y2="306" stroke-width="1"/>
+<text x="600.0" y="322" text-anchor="middle">60</text>
+<text x="395.0" y="342" text-anchor="middle">AP50 (%)</text>
+<circle class="c-canopy" cx="190" cy="14" r="5"/><text x="200" y="18">without depth (RGB)</text>
+<circle class="c-tape" cx="350" cy="14" r="5"/><text x="360" y="18">with depth (RGB-D)</text>
+<text class="" x="176" y="66.0" text-anchor="end">Mask R-CNN R50 (ref.)</text>
+<line class="s-ink" x1="234.7" x2="236.9" y1="62.0" y2="62.0" stroke-width="2"/>
+<circle class="c-canopy" cx="234.7" cy="62.0" r="5.5"/>
+<circle class="c-tape" cx="236.9" cy="62.0" r="5.5"/>
+<text x="224.7" y="66.0" text-anchor="end">6.54</text>
+<text class="c-strong" x="246.9" y="66.0">6.86 (+0.32)</text>
+<text class="" x="176" y="102.0" text-anchor="end">MaskDINO ResNet-50</text>
+<line class="s-ink" x1="408.7" x2="517.6" y1="98.0" y2="98.0" stroke-width="2"/>
+<circle class="c-canopy" cx="408.7" cy="98.0" r="5.5"/>
+<circle class="c-tape" cx="517.6" cy="98.0" r="5.5"/>
+<text x="398.7" y="102.0" text-anchor="end">32.00</text>
+<text class="c-strong" x="527.6" y="102.0">47.94 (+15.93)</text>
+<text class="" x="176" y="138.0" text-anchor="end">MaskDINO Swin-T</text>
+<line class="s-ink" x1="421.7" x2="537.4" y1="134.0" y2="134.0" stroke-width="2"/>
+<circle class="c-canopy" cx="421.7" cy="134.0" r="5.5"/>
+<circle class="c-tape" cx="537.4" cy="134.0" r="5.5"/>
+<text x="411.7" y="138.0" text-anchor="end">33.91</text>
+<text class="c-strong" x="547.4" y="138.0">50.84 (+16.93)</text>
+<text class="" x="176" y="174.0" text-anchor="end">MaskDINO Swin-B</text>
+<line class="s-ink" x1="456.2" x2="522.3" y1="170.0" y2="170.0" stroke-width="2"/>
+<circle class="c-canopy" cx="456.2" cy="170.0" r="5.5"/>
+<circle class="c-tape" cx="522.3" cy="170.0" r="5.5"/>
+<text x="446.2" y="174.0" text-anchor="end">38.95</text>
+<text class="c-strong" x="532.3" y="174.0">48.63 (+9.68)</text>
+<text class="" x="176" y="210.0" text-anchor="end">MaskDINO Swin-L</text>
+<line class="s-ink" x1="468.5" x2="537.3" y1="206.0" y2="206.0" stroke-width="2"/>
+<circle class="c-canopy" cx="468.5" cy="206.0" r="5.5"/>
+<circle class="c-tape" cx="537.3" cy="206.0" r="5.5"/>
+<text x="458.5" y="210.0" text-anchor="end">40.75</text>
+<text class="c-strong" x="547.3" y="210.0">50.82 (+10.07)</text>
+<text class="" x="176" y="246.0" text-anchor="end">MaskDINO FocalNet-B</text>
+<line class="s-ink" x1="489.0" x2="587.0" y1="242.0" y2="242.0" stroke-width="2"/>
+<circle class="c-canopy" cx="489.0" cy="242.0" r="5.5"/>
+<circle class="c-tape" cx="587.0" cy="242.0" r="5.5"/>
+<text x="479.0" y="246.0" text-anchor="end">43.75</text>
+<text class="c-strong" x="597.0" y="246.0">58.10 (+14.35)</text>
+<text class="c-strong" x="176" y="282.0" text-anchor="end">MaskDINO FocalNet-L</text>
+<line class="s-ink" x1="492.4" x2="580.7" y1="278.0" y2="278.0" stroke-width="2"/>
+<circle class="c-canopy" cx="492.4" cy="278.0" r="5.5"/>
+<circle class="c-tape" cx="580.7" cy="278.0" r="5.5"/>
+<text x="482.4" y="282.0" text-anchor="end">44.25</text>
+<text class="c-strong" x="590.7" y="282.0">57.18 (+12.92)</text>
+</svg>
+<!-- /chart:depth -->
+            <figcaption><b>Figure 2.</b> AP50 at 75,000 training iterations, with and without the depth channel, both arms trained from scratch (paper, Table 3). Depth adds between 9.68 and 16.93 points across the six backbones; a Mask R-CNN reference shows no measurable effect (+0.32) and sits far below the MaskDINO family. Ablation values sit below the final model's 62.29%, which uses 155,000 iterations.</figcaption>
+          </figure>
+          <h3>Detection, not recognition or measurement, is the bottleneck</h3>
+          <p>Because depth is an input, every ground-truth tree has a physical distance that does not depend on model weights, so results can be split by distance without retraining. The three abilities the system needs behave very differently.</p>
+          <figure class="figure chart" tabindex="0" role="group" aria-label="Chart (scrolls sideways on narrow screens)">
+            <!-- chart:distance -->
+<svg viewBox="0 0 720 330" role="img" aria-labelledby="t-dist d-dist">
+<title id="t-dist">Detection recall, mask IoU and species accuracy by camera distance</title>
+<desc id="d-dist">Line chart over six distance bins. Species accuracy stays between 98.9 and 100 percent. Mask IoU falls from 79.1 to 61.0 percent. Detection recall falls from 82.4 percent within 5 metres to 34.5 percent beyond 30 metres.</desc>
+<line class="s-rule" x1="52" x2="570" y1="286.0" y2="286.0" stroke-width="1"/>
+<text x="42" y="290.0" text-anchor="end">0</text>
+<line class="s-rule" x1="52" x2="570" y1="220.5" y2="220.5" stroke-width="1"/>
+<text x="42" y="224.5" text-anchor="end">25</text>
+<line class="s-rule" x1="52" x2="570" y1="155.0" y2="155.0" stroke-width="1"/>
+<text x="42" y="159.0" text-anchor="end">50</text>
+<line class="s-rule" x1="52" x2="570" y1="89.5" y2="89.5" stroke-width="1"/>
+<text x="42" y="93.5" text-anchor="end">75</text>
+<line class="s-rule" x1="52" x2="570" y1="24.0" y2="24.0" stroke-width="1"/>
+<text x="42" y="28.0" text-anchor="end">100</text>
+<text x="52.0" y="312" text-anchor="middle">0-5 m</text>
+<text x="155.6" y="312" text-anchor="middle">5-10 m</text>
+<text x="259.2" y="312" text-anchor="middle">10-15 m</text>
+<text x="362.8" y="312" text-anchor="middle">15-20 m</text>
+<text x="466.4" y="312" text-anchor="middle">20-30 m</text>
+<text x="570.0" y="312" text-anchor="middle">>30 m</text>
+<polyline class="s-canopy" points="52.0,25.0 155.6,24.8 259.2,24.5 362.8,24.0 466.4,25.0 570.0,26.9" stroke-width="2"/>
+<circle class="c-canopy" cx="52.0" cy="25.0" r="3.5"/>
+<circle class="c-canopy" cx="155.6" cy="24.8" r="3.5"/>
+<circle class="c-canopy" cx="259.2" cy="24.5" r="3.5"/>
+<circle class="c-canopy" cx="362.8" cy="24.0" r="3.5"/>
+<circle class="c-canopy" cx="466.4" cy="25.0" r="3.5"/>
+<circle class="c-canopy" cx="570.0" cy="26.9" r="3.5"/>
+<text class="" x="582.0" y="30.9">Species 98.9</text>
+<polyline class="s-ink" points="52.0,78.8 155.6,87.4 259.2,103.1 362.8,114.7 466.4,119.9 570.0,126.2" stroke-width="2" stroke-dasharray="6 4"/>
+<circle class="c-ink" cx="52.0" cy="78.8" r="3.5"/>
+<circle class="c-ink" cx="155.6" cy="87.4" r="3.5"/>
+<circle class="c-ink" cx="259.2" cy="103.1" r="3.5"/>
+<circle class="c-ink" cx="362.8" cy="114.7" r="3.5"/>
+<circle class="c-ink" cx="466.4" cy="119.9" r="3.5"/>
+<circle class="c-ink" cx="570.0" cy="126.2" r="3.5"/>
+<text class="" x="582.0" y="130.2">Mask IoU 61.0</text>
+<polyline class="s-tape" points="52.0,70.1 155.6,78.2 259.2,101.6 362.8,130.1 466.4,163.6 570.0,195.6" stroke-width="3"/>
+<circle class="c-tape" cx="52.0" cy="70.1" r="4.5"/>
+<circle class="c-tape" cx="155.6" cy="78.2" r="4.5"/>
+<circle class="c-tape" cx="259.2" cy="101.6" r="4.5"/>
+<circle class="c-tape" cx="362.8" cy="130.1" r="4.5"/>
+<circle class="c-tape" cx="466.4" cy="163.6" r="4.5"/>
+<circle class="c-tape" cx="570.0" cy="195.6" r="4.5"/>
+<text class="c-strong" x="582.0" y="199.6">Recall 34.5</text>
+</svg>
+<!-- /chart:distance -->
+            <figcaption><b>Figure 3.</b> Detection recall, mask IoU and species accuracy by camera distance on the test split (paper, Table 6). Species accuracy and mask IoU are conditional on the tree having been detected.</figcaption>
+          </figure>
+          <div class="table-scroll">
+            <table class="datatable">
+              <caption>Data behind Figure 3</caption>
+              <thead><tr><th>Distance</th><th>Trees</th><th>Recall (%)</th><th>Species correct (%)</th><th>Mask IoU (%)</th></tr></thead>
+              <tbody>
+                <tr><td>0-5 m</td><td>1,889</td><td>82.4</td><td>99.6</td><td>79.1</td></tr>
+                <tr><td>5-10 m</td><td>1,375</td><td>79.3</td><td>99.7</td><td>75.8</td></tr>
+                <tr><td>10-15 m</td><td>744</td><td>70.4</td><td>99.8</td><td>69.8</td></tr>
+                <tr><td>15-20 m</td><td>472</td><td>59.5</td><td>100.0</td><td>65.4</td></tr>
+                <tr><td>20-30 m</td><td>501</td><td>46.7</td><td>99.6</td><td>63.4</td></tr>
+                <tr><td>over 30 m</td><td>267</td><td>34.5</td><td>98.9</td><td>61.0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Of 7,925 annotated test trees, 4,913 were detected and 4,891 of those were also named correctly. The 3,034 failures break down into 3,012 trees never detected and 22 detected but misnamed, so misclassification is 0.7% of all failure. A single recall figure of 62.0% is a mixture of 82% nearby and 35% far away, weighted by how far away the trees in a given dataset happen to be, which is why two studies reporting the same aggregate number on different stands are not reporting the same thing. Recall also falls steadily with occlusion, from 74.8% for barely occluded trees to 44.3% for heavily occluded ones.</p>
+          <h3>Diameter</h3>
+          <p>Evaluated end-to-end, on the model's own masks and species, the model returns a diameter for 27.1% of eligible test trees (1,690 of 6,233), with 7.62 cm RMSE, 4.89 cm MAE and a bias of -1.28 cm. Absolute error rises with distance, but so does mean tree diameter, because small distant stems are the ones that are missed; relative RMSE stays roughly flat at 20-28%. A plot of predicted against true diameter has a slope of 0.74, which is regression towards the mean: small stems are over-estimated and large ones under-estimated, the expected behaviour of a regressor whose input cannot separate neighbouring diameters at this resolution.</p>
+          <h3>What did not help</h3>
+          <p>Raising the diameter loss weight after segmentation had formed cost about 5.9% in segmentation loss and brought no measurable diameter improvement. The evidence points to interference between the two objectives in the shared features, not to a weak diameter signal. The final model therefore keeps a constant weight.</p>
+          <figure class="figure figure--grid">
+            <div class="plate">
+              <div class="plate__pair">
+                <div><img src="../../assets/img/scene-rgb.webp" width="738" height="415" loading="lazy" alt="Input scene: a dense rainforest from ground level."><p class="small" style="margin:.3rem 0 .6rem;color:#3d4c43">(a) Input RGB-D scene</p></div>
+                <div><img src="../../assets/img/scene-truth.webp" width="738" height="415" loading="lazy" alt="The same scene with ten annotated tree instances in distinct colours."><p class="small" style="margin:.3rem 0 .6rem;color:#3d4c43">(b) Ground truth, 10 instances</p></div>
+                <div><img src="../../assets/img/scene-boxes.webp" width="738" height="419" loading="lazy" alt="Predicted bounding boxes overlapping heavily around neighbouring tree stems."><p class="small" style="margin:.3rem 0 .6rem;color:#3d4c43">(c) Predicted boxes</p></div>
+                <div><img src="../../assets/img/scene-prediction.webp" width="738" height="419" loading="lazy" alt="Predicted instance masks labelled with species and diameter in centimetres."><p class="small" style="margin:.3rem 0 .6rem;color:#3d4c43">(d) Predicted masks, species and DBH</p></div>
+              </div>
+            </div>
+            <figcaption><b>Figure 4.</b> One rainforest scene from the test split, from a single forward pass at score threshold 0.30. Labels read n/a where the head found no valid breast-height row (typically an occluded trunk) or where diameter is not defined, as for a liana. Boxes of neighbouring stems overlap heavily while their masks stay separable.</figcaption>
+          </figure>
+
+          <h2 id="limits"><span class="sec">05</span>Limitations</h2>
+          <ul>
+            <li><strong>Synthetic data only.</strong> There is no independent real-world evaluation. No public under-canopy dataset shares SPREAD's species, so a transfer test today would confound domain shift with taxonomic shift.</li>
+            <li><strong>Coverage.</strong> The 7.62 cm RMSE applies to the 27.1% of eligible trees for which the model returns a diameter. Most of the rest are trees it never detects, or detects but cannot resolve at breast height. The mean per-species R-squared is only 11.88% (8 species with at least 30 trees).</li>
+            <li><strong>Resolution floor.</strong> At 480x270 pixels, one pixel spans 8.33 cm at 20 m, the same size as the reported error. A method cannot express a trunk width more finely than the image quantises it.</li>
+            <li><strong>Diameter definition.</strong> Four of the eleven supervised species are small fruit trees that branch at or below breast height, so a single diameter at 1.3 m is not what a field crew would record for them.</li>
+          </ul>
+
+          <h2 id="relevance"><span class="sec">06</span>Why it matters for forest inventory and carbon accounting</h2>
+          <p>The practical aim is a low-cost alternative to terrestrial laser scanning: a single commodity RGB-D camera and one network, so that resource-limited forestry agencies and smallholder programmes could track stand structure and carbon stock without specialised equipment or field taxonomists. Because DBH feeds allometric biomass equations, the work is aimed at the measurement that most directly affects carbon estimates. It is a feasibility study on synthetic imagery. Closing the sim-to-real gap is the first step before any operational use, and the distance and occlusion analysis shows where an operational system would need improvement first: detection.</p>
+
+          <h2 id="role"><span class="sec">07</span>My role, credits and code</h2>
+          <ul>
+            <li>Thesis author, supervised by Dr. Muhamad Risqi Utama Saputra, who is co-author on the manuscript.</li>
+            <li>I designed the experiments and wrote the full training, evaluation and analysis pipeline in Python (PyTorch, Detectron2).</li>
+            <li>Builds on MaskDINO (IDEA-Research, Apache-2.0), FocalNet and the SPREAD dataset by Feng, She and Keshav; the repository contains only my patches and scripts, not those projects or the dataset.</li>
+            <li>The code is released as a record of what was run, not a plug-and-play package: many scripts hardcode cluster paths. Trained checkpoints are available on reasonable request.</li>
+          </ul>
+          <p class="linkrow"><a href="https://github.com/anurulhamzah/Tree-Segmentation-and-Diameter-Estimation">Repository</a> <a href="https://github.com/IDEA-Research/MaskDINO">MaskDINO (upstream)</a></p>
+          <div class="next"><a href="../../#work">Back to projects</a><a href="../student-retention/">Next: student retention</a></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
+      <span>The architecture and scene figures are reproduced from my own paper.</span>
+    </div>
+  </footer>
+  <script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
