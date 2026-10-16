@@ -75,7 +75,7 @@ body {
 img, svg { max-width: 100%; height: auto; display: block; }
 figure { margin: 0; }
 .hero__grid > *, .feature > *, .row > *, .approach > *, .about > *, .contact > *, .skills > div > *,
-.timeline li > *, .paper__grid > *, .section__head > * { min-width: 0; }
+.timeline > li > *, .paper__grid > *, .section__head > * { min-width: 0; }
 .facts > div, .keynums > div { min-width: 0; overflow-wrap: anywhere; }
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 a:hover { color: var(--canopy); }
@@ -236,13 +236,13 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 
 /* timeline */
 .timeline { list-style: none; margin: 0 0 3rem; padding: 0; border-top: 1px solid var(--ink); }
-.timeline li { display: grid; gap: 0.35rem 2rem; grid-template-columns: 1fr; padding: 1.2rem 0; border-bottom: 1px solid var(--rule); }
-@media (min-width: 860px) { .timeline li { grid-template-columns: 11rem minmax(0, 1fr); } }
+.timeline > li { display: grid; gap: 0.35rem 2rem; grid-template-columns: minmax(0, 1fr); padding: 1.2rem 0; border-bottom: 1px solid var(--rule); }
+@media (min-width: 860px) { .timeline > li { grid-template-columns: 11rem minmax(0, 1fr); } }
 .timeline time { font: 500 var(--step--1)/1.5 var(--font-mono); color: var(--ink-2); }
 .timeline h3 { font-size: var(--step-0); font-stretch: 95%; }
 .timeline .org { color: var(--ink-2); font-size: var(--step--1); margin: 0.15rem 0 0.5rem; }
 .timeline ul { margin: 0.4rem 0 0; padding-left: 1.1rem; max-width: 70ch; font-size: var(--step--1); color: var(--ink-2); }
-.timeline li > div > .type { display: inline-block; font: 600 0.68rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--tape); margin-bottom: 0.35rem; }
+.timeline > li > div > .type { display: inline-block; font: 600 0.68rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--tape); margin-bottom: 0.35rem; }
 .subhead { font: 600 0.78rem/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-2); margin: 0 0 0.9rem; }
 
 /* contact */
