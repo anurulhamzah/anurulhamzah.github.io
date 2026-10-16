@@ -311,6 +311,30 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 .notfound { min-height: 60vh; display: grid; align-content: center; }
 .notfound h1 { font-size: var(--step-4); }
 
+/* ---------- dashboards ---------- */
+.gallery { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); margin: 0 0 1.5rem; padding: 0; list-style: none; }
+@media (min-width: 760px) { .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.gallery a { display: block; text-decoration: none; }
+.gallery img, .dash__media img { aspect-ratio: 1200 / 690; object-fit: cover; object-position: top left; }
+.gallery .plate { padding: 0.4rem; transition: outline-color 0.15s ease; outline: 2px solid transparent; }
+.gallery a:hover .plate, .gallery a:focus-visible .plate { outline-color: var(--tape); }
+.gallery b { display: block; margin-top: 0.7rem; font-weight: 700; font-stretch: 92%; }
+.gallery span { display: block; font: 400 0.78rem/1.5 var(--font-mono); color: var(--ink-2); }
+
+.dash { display: grid; gap: 1.5rem clamp(1.5rem, 4vw, 3rem); grid-template-columns: minmax(0, 1fr); padding-block: 2.5rem; border-top: 1px solid var(--ink); }
+@media (min-width: 1000px) { .dash { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); align-items: start; } }
+.dash > * { min-width: 0; }
+.dash h2 { font-size: var(--step-2); font-stretch: 80%; margin-bottom: 0.4rem; }
+.dash__tool { font: 500 var(--step--1)/1.4 var(--font-mono); color: var(--ink-2); margin: 0 0 1rem; }
+.dash ul.shows { padding-left: 1.1rem; margin: 0 0 1.25rem; font-size: var(--step--1); color: var(--ink-2); max-width: 52ch; }
+.dash ul.shows li { margin-bottom: 0.3rem; }
+.dash__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.9rem; }
+.dash__actions .btn { padding: 0.7rem 0.9rem; }
+.dash__note { font: 400 0.76rem/1.6 var(--font-mono); color: var(--ink-2); max-width: 52ch; }
+.dash__media .plate { padding: 0.5rem; }
+.dash__media a { display: block; outline: 2px solid transparent; outline-offset: 2px; transition: outline-color 0.15s ease; }
+.dash__media a:hover, .dash__media a:focus-visible { outline-color: var(--tape); }
+
 @media (prefers-reduced-motion: no-preference) {
   .btn, .row__go, .contact__list a, .nav a, .toc a { transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
 }
