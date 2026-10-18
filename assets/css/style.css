@@ -416,3 +416,25 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 .paper__head .more li { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 640px) { .paper__head .more li { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
 .paper__head .dash__note { margin-top: 1rem; }
+
+/* approach: the pipeline */
+.pipe { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.pipe__row { display: grid; gap: 0.75rem 2rem; grid-template-columns: minmax(0, 1fr); padding: 1.4rem 0; border-bottom: 1px solid var(--rule); }
+@media (min-width: 900px) { .pipe__row { grid-template-columns: 3.5rem minmax(0, 4fr) minmax(0, 8fr); align-items: start; } }
+.pipe__row > * { min-width: 0; }
+.pipe__no { font: 500 var(--step--1)/1.3 var(--font-mono); color: var(--tape); padding-top: 0.35rem; }
+.pipe__what h3 { margin-bottom: 0.35rem; }
+.pipe__what p { margin: 0; color: var(--ink-2); font-size: var(--step--1); max-width: 34ch; }
+.pipe__proof { margin: 0; padding-left: 1.1rem; font-size: var(--step--1); color: var(--ink-2); }
+.pipe__proof li { margin-bottom: 0.45rem; max-width: 80ch; }
+.pipe__proof a { color: var(--canopy); }
+
+/* tables with prose cells */
+.datatable--text { max-width: none; }
+.datatable--text th, .datatable--text td { text-align: left; vertical-align: top; line-height: 1.55; }
+.datatable--text { font-family: var(--font-sans); font-size: var(--step--1); }
+.datatable--text th, .datatable--text caption { font-family: var(--font-mono); }
+.datatable--text td:nth-child(2) { color: var(--ink); max-width: 62ch; }
+.datatable--text td:first-child, .datatable--text th:first-child { white-space: nowrap; padding-left: 0; }
+.datatable--text td:last-child { font: 400 0.74rem/1.7 var(--font-mono); color: var(--ink-2); min-width: 15rem; }
+.datatable--text code { background: none; padding: 0; display: block; }

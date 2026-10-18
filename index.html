@@ -237,25 +237,74 @@
       <div class="wrap">
         <div class="section__head">
           <p class="section__no"><b>04</b> / Approach</p>
-          <h2 id="approach-title">How I work, shown by the thesis</h2>
+          <h2 id="approach-title">How I work, from raw data to results</h2>
         </div>
-        <div class="approach">
-          <div>
-            <h3>Isolate the variable</h3>
-            <p>Comparing RGB with RGB-D usually mixes two effects: depth, and whether the model starts from pretrained weights. A four-channel stem cannot inherit them. With both arms pretrained, depth looks worth under one AP50 point; with both trained from scratch it is worth 12.92.</p>
-            <p class="proof">Paper, section 3.2 / <a href="projects/tree-diameter-estimation/#results">results</a></p>
-          </div>
-          <div>
-            <h3>Evaluate what would be deployed</h3>
-            <p>Diameter is scored on the model's own detections and masks, not on ground truth. Of 3,034 trees the system failed on, 3,012 were simply never detected, only 22 were misnamed. That says where to work next.</p>
-            <p class="proof">Paper, section 3.5 / <a href="projects/tree-diameter-estimation/#results">distance breakdown</a></p>
-          </div>
-          <div>
-            <h3>Report what did not work</h3>
-            <p>Raising the diameter loss weight cost roughly 5.9% in segmentation loss and gave no measurable diameter gain, so the final model keeps a constant weight. A geometric diameter baseline is reported alongside the learned head, which beats it by about a factor of two.</p>
-            <p class="proof">Paper, sections 3.4 and 3.5.1 / <a href="projects/tree-diameter-estimation/#limits">limitations</a></p>
-          </div>
-        </div>
+        <p class="section__intro" style="margin-bottom:2rem">The stages my projects follow, each with an example from the work itself.</p>
+        <ol class="pipe">
+          <li class="pipe__row">
+            <span class="pipe__no">01</span>
+            <div class="pipe__what"><h3>Acquire</h3><p>Know where the data comes from and what it cannot say.</p></div>
+            <ul class="pipe__proof">
+              <li>Thesis: <a href="projects/tree-diameter-estimation/#pipeline">SPREAD</a>, a synthetic dataset from a third party; the page states that nothing was tested on real images.</li>
+              <li>Climate: a synthetic panel, checked against EDGAR, NOAA and FAOSTAT patterns before use (<a href="projects/climate-causal-analysis/">case study</a>).</li>
+              <li>Food security: regency-level indicators combined with global index data and agricultural subsidy figures (<a href="projects/food-security-dashboard/">case study</a>).</li>
+            </ul>
+          </li>
+          <li class="pipe__row">
+            <span class="pipe__no">02</span>
+            <div class="pipe__what"><h3>Audit</h3><p>Check the data before trusting a model built on it.</p></div>
+            <ul class="pipe__proof">
+              <li>Thesis: every annotation box compared with its mask, and the mask union with a semantic mask, in all images before any training.</li>
+              <li>Climate: summary statistics exposed negative pesticide and fertilizer values.</li>
+              <li>Food security: zeros in the stunting and undernourishment columns were found to be missing values.</li>
+            </ul>
+          </li>
+          <li class="pipe__row">
+            <span class="pipe__no">03</span>
+            <div class="pipe__what"><h3>Clean</h3><p>Fix it, keep the original, measure the effect.</p></div>
+            <ul class="pipe__proof">
+              <li>Thesis: 416 masks (0.8% of instances) repaired into a new folder. The fix added 1.7 AP50 for a pretrained RGB model and changed nothing for RGB-D trained from scratch.</li>
+              <li>Climate: 19 impossible rows (0.19%) removed, with the reason written down.</li>
+              <li>Missing, dirty and outlier values, and text parsing, in <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/data-cleaning-missing-dirty-outlier">two</a> <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/text-data-wrangling-pipeline">wrangling projects</a>.</li>
+            </ul>
+          </li>
+          <li class="pipe__row">
+            <span class="pipe__no">04</span>
+            <div class="pipe__what"><h3>Prepare</h3><p>Build the split so the test is honest.</p></div>
+            <ul class="pipe__proof">
+              <li>Thesis: split by rendered scene so one tree never sits on both sides, with a check inside every training script.</li>
+              <li>Climate: one preprocessing recipe applied to training and test data, to prevent leakage.</li>
+              <li>Retention: a held-out set of 885 students, scored once (<a href="projects/student-retention/">case study</a>).</li>
+            </ul>
+          </li>
+          <li class="pipe__row">
+            <span class="pipe__no">05</span>
+            <div class="pipe__what"><h3>Model</h3><p>Start from a baseline and change one thing at a time.</p></div>
+            <ul class="pipe__proof">
+              <li>Thesis: a Mask R-CNN reference, a geometric diameter baseline and six backbones; both arms of the depth comparison trained from scratch.</li>
+              <li>Retention: logistic regression before Random Forest and XGBoost.</li>
+              <li>Climate: mixed-effects models, then GAMs, a Random Forest and causal forests, each chosen for a stated reason.</li>
+            </ul>
+          </li>
+          <li class="pipe__row">
+            <span class="pipe__no">06</span>
+            <div class="pipe__what"><h3>Evaluate</h3><p>Measure what would be deployed, and where it fails.</p></div>
+            <ul class="pipe__proof">
+              <li>Thesis: diameter scored on the model's own detections; recall split by camera distance and by occlusion (<a href="projects/tree-diameter-estimation/#results">results</a>).</li>
+              <li>Retention: cross-validation, then one hold-out; the weakest class (Enrolled, recall 0.37) is reported.</li>
+              <li>Bayesian and CRF project: F1 on training, validation and test data to check for overfitting (<a href="projects/bayesian-network-crf/">case study</a>).</li>
+            </ul>
+          </li>
+          <li class="pipe__row">
+            <span class="pipe__no">07</span>
+            <div class="pipe__what"><h3>Communicate</h3><p>Say what the result does and does not show.</p></div>
+            <ul class="pipe__proof">
+              <li>Interactive R Shiny and Tableau dashboards for readers who will not open a notebook (<a href="dashboards/">dashboards</a>).</li>
+              <li>Project pages and READMEs list limitations and what is not included.</li>
+              <li>Thesis page: diameter is returned for about 27% of eligible trees (<a href="projects/tree-diameter-estimation/#limits">limitations</a>).</li>
+            </ul>
+          </li>
+        </ol>
       </div>
     </section>
 

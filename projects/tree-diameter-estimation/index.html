@@ -60,6 +60,7 @@
           <ol>
             <li><a href="#abstract">Summary</a></li>
             <li><a href="#problem">The inventory problem</a></li>
+            <li><a href="#pipeline">From raw data to results</a></li>
             <li><a href="#model">The model</a></li>
             <li><a href="#data">Data and design</a></li>
             <li><a href="#results">Results</a></li>
@@ -78,7 +79,27 @@
           <p>Forest inventory turns standing trees into per-tree records, chiefly species and trunk diameter, that carbon stock estimates, biodiversity indices and timber yield models are built from. DBH enters allometric biomass equations directly, so an error in diameter propagates into every downstream carbon figure. In Indonesian forests and agroforestry systems these records are still mostly collected by hand with diameter tapes. Cost scales with the number of trees rather than the area surveyed, and species identification needs skilled labour.</p>
           <p>Terrestrial laser scanning recovers trunk geometry precisely but costs too much for routine inventory in much of the region. Image-based methods use cheap cameras, but most work close to a single trunk that the operator has chosen. The harder setting is a whole scene seen from where a field crew actually stands: trees occlude each other, and apparent size varies by more than an order of magnitude with distance. This thesis asks whether one network can deliver both measurements there, and where it fails.</p>
 
-          <h2 id="model"><span class="sec">02</span>The model</h2>
+          <h2 id="pipeline"><span class="sec">02</span>From raw data to results</h2>
+          <p>Most of the work was not the network. It was making the data trustworthy and the comparison fair, in seven stages. The table says what each stage did and which scripts in the public repository carry it out.</p>
+          <div class="table-scroll">
+            <table class="datatable datatable--text">
+              <caption>The pipeline, stage by stage</caption>
+              <thead><tr><th>Stage</th><th>What was done</th><th>Scripts</th></tr></thead>
+              <tbody>
+                <tr><td><strong>1. Acquire</strong></td><td>SPREAD, a third-party synthetic below-canopy dataset rendered in Unreal Engine 5: 13 species in a plantation and a rainforest domain, with a colour image, depth map, instance masks, species and, for a subset, DBH. Obtained from its authors and not redistributed.</td><td><code>register_combined.py</code><code>register_plantations.py</code><code>register_rainforests.py</code></td></tr>
+                <tr><td><strong>2. Audit</strong></td><td>Before any training: each annotation's box compared with its mask to flag trees with a large box but a tiny mask; the union of the annotation masks compared with a semantic tree mask in every image and split, to find trunks left out; trunk pixel widths and the share of blank DBH values scanned per species.</td><td><code>gt_bbox_seg_audit.py</code><code>coco_vs_semantic_full.py</code><code>scan_trunk_px_distribution.py</code><code>generate_dataset_report.py</code></td></tr>
+                <tr><td><strong>3. Repair and select</strong></td><td>Masks regenerated from the raw instance images into a new folder, never overwriting the original and guaranteeing each new mask contains the old one. Plantation masks needed it; rainforest masks were already exact and were copied unchanged. Missing main-tree annotations were added. The paper reports 416 masks (0.8% of instances) repaired: +1.7 AP50 for a pretrained RGB configuration, unchanged within noise for RGB-D from scratch. The species for diameter supervision were chosen from the data: those with more than half of DBH blank were excluded (Lemon 86.9% blank, LeechVine 66.4%, a liana), which leaves eleven.</td><td><code>repair_coco_tolerant.py</code><code>repair_coco_exact_v4.py</code><code>fix_main_tree_annotations.py</code><code>create_clean_dbh_json_v3_universe11.py</code></td></tr>
+                <tr><td><strong>4. Prepare</strong></td><td>Splits made by rendered scene, with a validator that each training script calls to confirm the stratified split is used; a 5% scene-aware sample for quick smoke tests; depth upsampled with nearest-neighbour rather than bilinear so edges between trunk and background do not get invented in-between values; and a script that widens a pretrained 3-channel stem to four channels for RGB-D.</td><td><code>make_splits.py</code><code>create_stratified_splits.py</code><code>split_validator.py</code><code>make_sample.py</code><code>upsample_rf_depth_960.py</code><code>inflate_stem_rgbd.py</code></td></tr>
+                <tr><td><strong>5. Experiment</strong></td><td>Staged sweeps on a SLURM GPU cluster over the annotation filter, backbone, learning rate and image size; six backbones plus a Mask R-CNN reference; augmentation variants (mosaic, copy-paste, class weights); and a diameter head rebuilt through several versions (v2 to v7 in the repository) before the final joint model.</td><td><code>run_sweep_phases1to4.py</code><code>train_combined.py</code><code>train_combined_mosaic.py</code><code>finetune_trunk_roi_dbh_hybrid_joint.py</code></td></tr>
+                <tr><td><strong>6. Evaluate</strong></td><td>Diameter scored end-to-end on the model's own detections; every checkpoint evaluated, not only the last; recall split by camera distance and by occlusion ratio; a near-miss versus true-miss analysis to ask whether lost recall comes from occlusion; a test that degrades the depth channel to see how much the model relies on it; a score-threshold sweep; and parameters, FLOPs and speed per backbone.</td><td><code>eval_end_to_end_dbh.py</code><code>recall_per_jarak.py</code><code>occlusion_robustness.py</code><code>nearmiss_occlusion_analysis.py</code><code>eval_depth_degradation.py</code><code>threshold_sweep_figure.py</code><code>measure_flops_fps_v4.py</code></td></tr>
+                <tr><td><strong>7. Report</strong></td><td>Every figure regenerated from cached predictions; a model-selection tracker kept up to date during the runs; and a paper that states what did not work.</td><td><code>thesis_figures.py</code><code>gen_final_model_tracker.py</code><code>gen_qualitative_predictions.py</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="aside-note"><b>Where the controlled comparison came from.</b> The script that widens a pretrained stem records an early run in which the pretrained RGB-D model scored below the one trained from scratch (41.7 versus 50.4 AP50). That is the same effect the paper's controlled comparison later isolates, and it is why every depth comparison trains both arms from scratch.</p>
+          <p class="small">Scripts are in <a href="https://github.com/anurulhamzah/Tree-Segmentation-and-Diameter-Estimation/tree/main/code/scripts">code/scripts</a>. Many hardcode the cluster paths used during the runs, and some comments are in Indonesian.</p>
+
+          <h2 id="model"><span class="sec">03</span>The model</h2>
           <p>The architecture builds on MaskDINO, a query-based instance segmentation model, with a FocalNet-L backbone. The input convolution is widened from three to four channels so that depth enters as an input. A second head estimates diameter from backbone features at the image row that corresponds to breast height.</p>
           <figure class="figure">
             <div class="plate plate--scroll" tabindex="0" role="group" aria-label="Architecture diagram (scrolls sideways on narrow screens)">
@@ -88,12 +109,12 @@
           </figure>
           <p>The diameter head uses depth to find the image row whose back-projected height is closest to 1.3 m, isolates the trunk columns nearest the camera in that row, and computes a purely geometric diameter from pixel width and distance. That value is both reported as a baseline and supplied to a small network that regresses the final diameter together with learned features and the species. The geometric baseline alone is about a factor of two worse than the learned head.</p>
 
-          <h2 id="data"><span class="sec">03</span>Data and experimental design</h2>
+          <h2 id="data"><span class="sec">04</span>Data and experimental design</h2>
           <p>Training and evaluation use SPREAD, a synthetic below-canopy dataset rendered in Unreal Engine 5 (Feng, She and Keshav, 2025). A virtual camera about 2 m above ground looks laterally into plantation and rainforest scenes, giving a colour image, a per-pixel depth map, instance masks, a species label and, for a subset, a recorded DBH. Thirteen species are used for segmentation; diameter is supervised on the eleven that carry recorded DBH. The split is by rendered scene, not by image, so the same tree never appears on both sides. The test split has 7,925 annotated tree instances. I trained and evaluated on a SLURM-managed HPC cluster with NVIDIA L40S GPUs.</p>
           <h3>Controlling for pretraining</h3>
           <p>RGB and RGB-D are usually compared with the RGB model initialised from ImageNet and the RGB-D model trained from scratch, because a four-channel stem cannot inherit three-channel weights. That mixes depth with initialisation. In the paper, pretraining raised the RGB model's AP50 by 4.29 points but lowered the RGB-D model's, because ImageNet features that help a three-channel input work against a four-channel one. A comparison with both arms pretrained would report a depth advantage of only 0.91 points. Only with pretraining removed from both arms does the 12.92-point effect appear, so every depth comparison here trains both arms from scratch and varies only the channel count.</p>
 
-          <h2 id="results"><span class="sec">04</span>Results</h2>
+          <h2 id="results"><span class="sec">05</span>Results</h2>
           <h3>Depth helps in every MaskDINO configuration</h3>
           <figure class="figure chart" tabindex="0" role="group" aria-label="Chart (scrolls sideways on narrow screens)">
             <!-- chart:depth -->
@@ -245,7 +266,7 @@
             <figcaption><b>Figure 4.</b> One rainforest scene from the test split, from a single forward pass at score threshold 0.30. Labels read n/a where the head found no valid breast-height row (typically an occluded trunk) or where diameter is not defined, as for a liana. Boxes of neighbouring stems overlap heavily while their masks stay separable.</figcaption>
           </figure>
 
-          <h2 id="limits"><span class="sec">05</span>Limitations</h2>
+          <h2 id="limits"><span class="sec">06</span>Limitations</h2>
           <ul>
             <li><strong>Synthetic data only.</strong> There is no independent real-world evaluation. No public under-canopy dataset shares SPREAD's species, so a transfer test today would confound domain shift with taxonomic shift.</li>
             <li><strong>Coverage.</strong> The 7.62 cm RMSE applies to the 27.1% of eligible trees for which the model returns a diameter. Most of the rest are trees it never detects, or detects but cannot resolve at breast height. The mean per-species R-squared is only 11.88% (8 species with at least 30 trees).</li>
@@ -253,10 +274,10 @@
             <li><strong>Diameter definition.</strong> Four of the eleven supervised species are small fruit trees that branch at or below breast height, so a single diameter at 1.3 m is not what a field crew would record for them.</li>
           </ul>
 
-          <h2 id="relevance"><span class="sec">06</span>Why it matters for forest inventory and carbon accounting</h2>
+          <h2 id="relevance"><span class="sec">07</span>Why it matters for forest inventory and carbon accounting</h2>
           <p>The practical aim is a low-cost alternative to terrestrial laser scanning: a single commodity RGB-D camera and one network, so that resource-limited forestry agencies and smallholder programmes could track stand structure and carbon stock without specialised equipment or field taxonomists. Because DBH feeds allometric biomass equations, the work is aimed at the measurement that most directly affects carbon estimates. It is a feasibility study on synthetic imagery. Closing the sim-to-real gap is the first step before any operational use, and the distance and occlusion analysis shows where an operational system would need improvement first: detection.</p>
 
-          <h2 id="role"><span class="sec">07</span>My role, credits and code</h2>
+          <h2 id="role"><span class="sec">08</span>My role, credits and code</h2>
           <ul>
             <li>Thesis author, supervised by Dr. Muhamad Risqi Utama Saputra, who is co-author on the manuscript.</li>
             <li>I designed the experiments and wrote the full training, evaluation and analysis pipeline in Python (PyTorch, Detectron2).</li>
