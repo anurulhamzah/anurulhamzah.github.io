@@ -313,7 +313,8 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 
 /* ---------- dashboards ---------- */
 .gallery { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); margin: 0 0 1.5rem; padding: 0; list-style: none; }
-@media (min-width: 760px) { .gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 640px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .gallery a { display: block; text-decoration: none; }
 .gallery img, .dash__media img { aspect-ratio: 1200 / 690; object-fit: cover; object-position: top left; }
 .gallery .plate { padding: 0.4rem; transition: outline-color 0.15s ease; outline: 2px solid transparent; }

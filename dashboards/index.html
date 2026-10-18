@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboards | A. F. Nurulhamzah</title>
-  <meta name="description" content="Tableau dashboards on airline passenger satisfaction, e-commerce performance (executive and tactical) and HR attrition, each open live on Tableau Public.">
+  <meta name="description" content="An R Shiny dashboard on food security in Indonesia, plus Tableau dashboards on airline satisfaction, e-commerce and HR attrition, each open live.">
   <meta name="color-scheme" content="light dark">
   <link rel="canonical" href="https://anurulhamzah.github.io/dashboards/">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
@@ -39,8 +39,8 @@
     <div class="wrap">
       <p class="crumbs"><a href="../">Home</a> / Dashboards</p>
       <h1>Dashboards you can open and filter</h1>
-      <p class="lede" style="max-width:56ch">Three business case studies with Tableau dashboards, each for a brief. Select a preview, or the button beside it, to open the live dashboard on Tableau Public, where every filter works.</p>
-      <p class="dash__note" style="margin-top:1rem">The previews are screenshots, so this page loads nothing from Tableau until you follow a link. The dashboards are from 2023.</p>
+      <p class="lede" style="max-width:56ch">Four dashboards: an R Shiny app on food security in Indonesia, and three Tableau dashboards for business cases. Select a preview, or the button beside it, to open the live dashboard, where every filter works.</p>
+      <p class="dash__note" style="margin-top:1rem">The previews are screenshots, so this page loads nothing from Tableau or shinyapps.io until you follow a link. The Tableau dashboards are from 2023 and the R Shiny app from 2025.</p>
 
       <article class="dash" id="passenger">
         <div>
@@ -113,6 +113,30 @@
         </figure>
       </article>
 
+      <article class="dash" id="food">
+        <div>
+          <h2>Food security and vulnerability in Indonesia</h2>
+          <p class="dash__tool">R Shiny on shinyapps.io / 2025 / team of three</p>
+          <ul class="shows">
+            <li>District map, trend lines and top and bottom regions for the food security index, stunting, poverty and undernourishment, 2018-2024.</li>
+            <li>Geographically weighted regression to find local drivers of food insecurity, with PCA and K-Means clusters of priority districts.</li>
+            <li>ARIMA forecasts for 2025-2030 against 2030 goals, a global comparison on the Global Food Security Index, and an analysis of agricultural subsidies.</li>
+          </ul>
+          <div class="dash__actions">
+            <a class="btn" href="https://anurulhamzah.shinyapps.io/food-security-dashboard-indonesia/" rel="noopener">Open live dashboard</a>
+            <a class="btn btn--ghost" href="../projects/food-security-dashboard/">Read the case study</a>
+          </div>
+          <p class="dash__note">The free hosting plan puts the app to sleep when idle, so the first load can take about ten seconds.</p>
+        </div>
+        <figure class="dash__media">
+          <div class="plate">
+            <a href="https://anurulhamzah.shinyapps.io/food-security-dashboard-indonesia/" rel="noopener" aria-label="Open the live food security dashboard on shinyapps.io">
+              <img src="../assets/img/dash-food-security.webp" width="1200" height="626" loading="lazy" alt="Food security dashboard with a green choropleth map of Indonesian districts coloured by food security index, summary values for average index, stunting and poverty, and filters for indicator, province, year and regional classification.">
+            </a>
+            <figcaption>General overview tab of the R Shiny dashboard (screenshot).</figcaption>
+          </div>
+        </figure>
+      </article>
       <div class="next"><a href="../#work">Back to projects</a><a href="../#contact">Contact</a></div>
     </div>
   </main>
@@ -120,7 +144,7 @@
   <footer class="site-footer">
     <div class="wrap">
       <span>Akhmad Fauzi Nurulhamzah, October 2026</span>
-      <span>The live dashboards are hosted by Tableau Public.</span>
+      <span>The live dashboards are hosted by Tableau Public and shinyapps.io.</span>
     </div>
   </footer>
   <script src="../assets/js/main.js" defer></script>
