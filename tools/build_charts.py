@@ -12,7 +12,9 @@ import re
 import sys
 from pathlib import Path
 
-PAGE = Path(__file__).resolve().parent.parent / "projects" / "tree-diameter-estimation" / "index.html"
+ROOT = Path(__file__).resolve().parent.parent
+PAGE = ROOT / "projects" / "tree-diameter-estimation" / "index.html"
+PAGE_BAYES = ROOT / "projects" / "bayesian-network-crf" / "index.html"
 
 # Table 3: AP50 at 75,000 iterations, both arms trained from scratch: (label, RGB, RGB-D, delta, final?)
 DEPTH = [
@@ -110,19 +112,52 @@ def distance_chart():
     return "\n".join(out)
 
 
-CHARTS = {"depth": depth_chart, "distance": distance_chart}
+
+# Bayesian/CRF project: weighted F1 of the CRF on train, validation and test (second run in the report)
+CRF = [("Train", 0.9715), ("Validation", 0.9698), ("Test", 0.9650)]
+
+
+def crf_chart():
+    w, left, right, top = 480, 110, 40, 30
+    row_h = 44
+    h = top + len(CRF) * row_h + 56
+    lo, hi = 0.950, 0.980
+    pw = w - left - right
+
+    def x(v):
+        return left + pw * (v - lo) / (hi - lo)
+
+    out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-labelledby="t-crf d-crf">',
+           '<title id="t-crf">Weighted F1 of the CRF by data split</title>',
+           '<desc id="d-crf">Dot plot of weighted F1: 0.9715 on training, 0.9698 on validation and 0.9650 on test data. The axis runs from 0.95 to 0.98.</desc>']
+    for t in (0.95, 0.96, 0.97, 0.98):
+        out.append(f'<line class="s-rule" x1="{x(t):.1f}" x2="{x(t):.1f}" y1="{top - 8}" y2="{h - 40}" stroke-width="1"/>')
+        out.append(f'<text x="{x(t):.1f}" y="{h - 24}" text-anchor="middle">{t:.2f}</text>')
+    out.append(f'<text x="{left + pw / 2:.1f}" y="{h - 6}" text-anchor="middle">weighted F1 (axis starts at 0.95)</text>')
+    for i, (label, v) in enumerate(CRF):
+        cy = top + i * row_h + row_h / 2
+        out.append(f'<text x="{left - 14}" y="{cy + 4:.1f}" text-anchor="end">{label}</text>')
+        out.append(f'<line class="s-ink" x1="{x(lo):.1f}" x2="{x(v):.1f}" y1="{cy:.1f}" y2="{cy:.1f}" stroke-width="1.5"/>')
+        cls = "c-tape" if label == "Test" else "c-canopy"
+        out.append(f'<circle class="{cls}" cx="{x(v):.1f}" cy="{cy:.1f}" r="6"/>')
+        out.append(f'<text class="c-strong" x="{x(v) + 12:.1f}" y="{cy + 4:.1f}">{v:.4f}</text>')
+    out.append("</svg>")
+    return "\n".join(out)
+CHARTS = {"depth": (PAGE, depth_chart), "distance": (PAGE, distance_chart), "crf": (PAGE_BAYES, crf_chart)}
 
 
 def main():
-    html = PAGE.read_text(encoding="utf-8")
-    for name, fn in CHARTS.items():
+    pages = {}
+    for name, (page, fn) in CHARTS.items():
+        html = pages.get(page) or page.read_text(encoding="utf-8")
         pattern = re.compile(r"<!-- chart:%s -->(?:.*?<!-- /chart:%s -->)?" % (name, name), re.S)
         if not pattern.search(html):
-            sys.exit("marker for chart '%s' not found" % name)
+            sys.exit("marker for chart '%s' not found in %s" % (name, page.name))
         block = "<!-- chart:%s -->\n%s\n<!-- /chart:%s -->" % (name, fn(), name)
-        html = pattern.sub(lambda m: block, html, count=1)
-    PAGE.write_text(html, encoding="utf-8")
-    print("charts written to", PAGE.name)
+        pages[page] = pattern.sub(lambda m: block, html, count=1)
+    for page, html in pages.items():
+        page.write_text(html, encoding="utf-8")
+        print("charts written to", page.parent.name)
 
 
 if __name__ == "__main__":

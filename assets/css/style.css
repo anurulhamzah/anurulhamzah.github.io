@@ -41,7 +41,7 @@
   --step-4: clamp(2.5rem, 1.6rem + 4.4vw, 5.2rem);
 
   --gutter: clamp(1rem, 4vw, 2.5rem);
-  --measure: 66ch;
+  --measure: 74ch;
   --max: 1180px;
 }
 
@@ -362,3 +362,57 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 .split .prose p, .split .prose ul { max-width: none; }
 .split__side .figure { margin: 0 0 1.25rem; }
 .split__side .plate { padding: 0.4rem; }
+
+/* editorial rows: text on the left, evidence on the right, aligned section by section */
+.rows2 { margin-top: 2.5rem; }
+.row2 { display: grid; gap: 1.5rem clamp(1.5rem, 4vw, 3.5rem); grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--ink); padding-top: 1.25rem; margin-top: 3rem; }
+.row2:first-child { margin-top: 0; }
+@media (min-width: 1000px) { .row2 { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); align-items: start; } }
+.row2 > * { min-width: 0; }
+.row2 .prose h2 { border-top: 0; padding-top: 0; margin-top: 0; }
+.row2 .prose p, .row2 .prose ul, .row2 .prose ol { max-width: none; }
+.row2__side .figure { margin: 0 0 1.25rem; }
+.row2__side > :last-child { margin-bottom: 0; }
+.row2__side .plate { padding: 0.4rem; }
+.row2__side .datatable { margin: 0 0 1.25rem; max-width: none; }
+.aside-note { font: 400 0.8rem/1.6 var(--font-mono); color: var(--ink-2); border-left: 3px solid var(--tape); padding: 0.2rem 0 0.2rem 1rem; margin: 0 0 1.25rem; }
+.aside-note b { color: var(--ink); font-weight: 600; }
+.flow { margin: 0 0 1.25rem; }
+.flow svg { width: 100%; height: auto; }
+.flow text { font-family: var(--font-mono); fill: var(--ink-2); font-size: 11px; }
+.flow .t { fill: var(--ink); font-weight: 600; font-size: 12px; }
+.flow rect { fill: none; stroke: var(--ink); stroke-width: 1.2; }
+.flow .hl { stroke: var(--tape); stroke-width: 2; }
+.flow path { stroke: var(--ink-2); fill: none; stroke-width: 1.2; }
+.flow .arr { fill: var(--ink-2); stroke: none; }
+/* earlier work: text left, list right */
+.earlier { display: grid; gap: 1.5rem clamp(1.5rem, 4vw, 3.5rem); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .earlier { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; } }
+.earlier > * { min-width: 0; }
+.earlier .more { margin: 0; }
+.earlier .more li { align-items: baseline; }
+/* project page header: title on the left, key facts stacked on the right */
+.paper__head { display: grid; gap: 1.5rem clamp(1.5rem, 4vw, 3.5rem); grid-template-columns: minmax(0, 1fr); margin-bottom: 0.5rem; }
+.paper__head > * { min-width: 0; }
+@media (min-width: 1000px) {
+  .paper__head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: end; }
+  .paper__head .facts { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
+}
+.paper__head .facts > div { padding-right: 0; }
+.paper__head .facts > div + div { border-top: 1px solid var(--rule); }
+.paper__title h1 { max-width: 24ch; }
+
+/* experience bullets use the full column */
+.timeline ul { max-width: 92ch; }
+/* a continuation row inside a section */
+.row2--sub { border-top: 0; margin-top: 1.5rem; padding-top: 0; }
+.row2--sub .prose h3 { margin-top: 0; }
+
+/* charts in the narrow side column fit their box */
+.row2__side .chart { overflow: visible; }
+.row2__side .chart svg { min-width: 0; }
+
+/* dashboards header list */
+.paper__head .more li { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .paper__head .more li { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+.paper__head .dash__note { margin-top: 1rem; }

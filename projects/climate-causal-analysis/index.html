@@ -37,35 +37,99 @@
   <main id="main" class="paper">
     <div class="wrap">
       <p class="crumbs"><a href="../../">Home</a> / Projects / Climate and agriculture</p>
+      <div class="paper__head">
+        <div class="paper__title">
       <h1>Climate change and global agriculture: which adaptation strategies work, and where</h1>
       <p class="paper__byline">2025. Individual project. R, CRISP-DM.</p>
-
+      <p class="linkrow"><a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/climate-causal-analysis">R Markdown analysis on GitHub</a></p>
+        </div>
       <dl class="facts facts--paper">
         <div><dt>Data</dt><dd>10,000 synthetic records, 1990-2024<small>15 features; checked against EDGAR, NOAA and FAOSTAT patterns</small></dd></div>
         <div><dt>Outcomes</dt><dd>Crop yield, economic impact<small>economic impact in USD million</small></dd></div>
         <div><dt>Strategies compared</dt><dd>Four<small>crop rotation, water management, drought-resistant crops, organic farming</small></dd></div>
       </dl>
-
-      <div class="prose" style="margin-top:2.5rem">
-        <h2><span class="sec">01</span>Question</h2>
-        <p>Climate change threatens crop yields, but farmers respond with different adaptation strategies, and whether a strategy works probably depends on the crop and the region. The project moves from describing the relationship between climate, inputs and yield, to predicting yield, to asking which strategy is most effective in which context.</p>
-        <p>The dataset is synthetic, and the report says so. As a check, its trends were compared with authoritative sources: CO2 levels with EDGAR, temperature patterns with NOAA climate records, and yield patterns with FAOSTAT. The overall patterns were similar. Conclusions are therefore about the method on this dataset, not findings about real farms.</p>
-
-        <h2><span class="sec">02</span>Method</h2>
-        <ul>
-          <li><strong>Preparation.</strong> Removed 19 rows (about 0.19% of the 10,000 observations) with physically impossible negative pesticide and fertilizer values, and grouped countries into climate zones to reduce the cardinality of the country variable.</li>
-          <li><strong>Exploration.</strong> Fertilizer use and yield correlate at 0.73, as do yield and economic impact, while climate variables alone show only weak linear correlation with yield. That pointed to non-linear effects and justified a GAM.</li>
-          <li><strong>Inference.</strong> Linear mixed-effects models (lme4), with random intercepts for crop and for region nested in country, because observations are hierarchical. Generalized additive models (mgcv) to show non-linear effects of temperature, fertilizer, pesticide, CO2, irrigation and soil.</li>
-          <li><strong>Prediction.</strong> Random Forest in tidymodels with an 80/20 split and 5-fold cross-validation for tuning, checked with residual plots and variable importance.</li>
-          <li><strong>Causal analysis.</strong> Because strategies are not randomly assigned, multinomial propensity-score weighting (with robust standard errors) estimates average treatment effects, and causal forests (grf) estimate how effects differ by crop and region.</li>
-        </ul>
-
-        <h2><span class="sec">03</span>What this shows</h2>
-        <p>The project is a complete workflow from data cleaning to heterogeneous treatment effects, with each modelling choice justified in the analysis: why mixed effects, why GAMs, why weighting. Treatment-effect estimates from observational data depend on unconfoundedness assumptions that cannot be verified here, and the data is synthetic, so I present this as a demonstration of method rather than as evidence about which strategy to adopt.</p>
-
-        <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/climate-causal-analysis">R Markdown analysis on GitHub</a>. The dataset file is not included, and the written report is not published.</p>
-        <div class="next"><a href="../student-retention/">Previous: student retention</a><a href="../bayesian-network-crf/">Next: Bayesian network and CRF</a></div>
       </div>
+
+      <div class="rows2">
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">01</span>Question</h2>
+            <p>Climate change threatens crop yields, but farmers respond with different adaptation strategies, and whether a strategy works probably depends on the crop and the region. The project moves from describing the relationship between climate, inputs and yield, to predicting yield, to asking which strategy is most effective in which context.</p>
+            <p>The dataset is synthetic, and the report says so. As a check, its trends were compared with authoritative sources: CO2 levels with EDGAR, temperature patterns with NOAA climate records, and yield patterns with FAOSTAT. The overall patterns were similar. Conclusions are therefore about the method on this dataset, not findings about real farms.</p>
+          </div>
+          <div class="row2__side">
+            <div class="table-scroll">
+              <table class="datatable">
+                <caption>The dataset at a glance</caption>
+                <tbody>
+                  <tr><td>Observations</td><td>10,000</td></tr>
+                  <tr><td>Features</td><td>15</td></tr>
+                  <tr><td>Period</td><td>1990-2024</td></tr>
+                  <tr><td>Structure</td><td>yearly records by crop, region and country</td></tr>
+                  <tr><td>Rows removed</td><td>19 (about 0.19%), impossible negative inputs</td></tr>
+                  <tr><td>Fertilizer vs yield</td><td>correlation 0.73</td></tr>
+                  <tr><td>Yield vs economic impact</td><td>correlation 0.73</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">02</span>Method</h2>
+            <ul>
+              <li><strong>Preparation.</strong> Removed 19 rows (about 0.19% of the 10,000 observations) with physically impossible negative pesticide and fertilizer values, and grouped countries into climate zones to reduce the cardinality of the country variable.</li>
+              <li><strong>Exploration.</strong> Fertilizer use and yield correlate at 0.73, as do yield and economic impact, while climate variables alone show only weak linear correlation with yield. That pointed to non-linear effects and justified a GAM.</li>
+              <li><strong>Inference.</strong> Linear mixed-effects models (lme4), with random intercepts for crop and for region nested in country, because observations are hierarchical. Generalized additive models (mgcv) to show non-linear effects of temperature, fertilizer, pesticide, CO2, irrigation and soil.</li>
+              <li><strong>Prediction.</strong> Random Forest in tidymodels with an 80/20 split and 5-fold cross-validation for tuning, checked with residual plots and variable importance.</li>
+              <li><strong>Causal analysis.</strong> Because strategies are not randomly assigned, multinomial propensity-score weighting (with robust standard errors) estimates average treatment effects, and causal forests (grf) estimate how effects differ by crop and region.</li>
+            </ul>
+          </div>
+          <div class="row2__side">
+            <figure class="flow" aria-label="Workflow from data preparation to causal effects">
+              <svg viewBox="0 0 460 440" role="img" aria-labelledby="t-flow d-flow">
+                <title id="t-flow">Analysis workflow</title>
+                <desc id="d-flow">Five steps: prepare the data, explore it, explain it with mixed-effects and additive models, predict yield with a Random Forest, and compare adaptation strategies with propensity-score weighting and causal forests.</desc>
+                <rect x="6" y="6" width="448" height="70"/><text class="t" x="20" y="30">1  Prepare</text><text x="20" y="50">19 impossible rows removed, countries grouped</text><text x="20" y="65">into climate zones</text>
+                <path d="M230 76v18"/><path class="arr" d="M224 92l6 8 6-8z"/>
+                <rect x="6" y="100" width="448" height="70"/><text class="t" x="20" y="124">2  Explore</text><text x="20" y="144">fertilizer and yield r = 0.73; climate effects</text><text x="20" y="159">weakly linear, so smooth terms are needed</text>
+                <path d="M230 170v18"/><path class="arr" d="M224 186l6 8 6-8z"/>
+                <rect x="6" y="194" width="448" height="70"/><text class="t" x="20" y="218">3  Explain</text><text x="20" y="238">mixed-effects models (crop, region in country)</text><text x="20" y="253">additive models for non-linear effects</text>
+                <path d="M230 264v18"/><path class="arr" d="M224 280l6 8 6-8z"/>
+                <rect x="6" y="288" width="448" height="70"/><text class="t" x="20" y="312">4  Predict</text><text x="20" y="332">Random Forest, 80/20 split, 5-fold tuning,</text><text x="20" y="347">residual and importance checks</text>
+                <path d="M230 358v18"/><path class="arr" d="M224 374l6 8 6-8z"/>
+                <rect class="hl" x="6" y="382" width="448" height="52"/><text class="t" x="20" y="404">5  Compare strategies</text><text x="20" y="422">propensity-score weighting, then causal forests</text>
+              </svg>
+              <figcaption>The analysis workflow, following CRISP-DM from preparation to causal effects.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">03</span>What this shows</h2>
+            <p>The project is a complete workflow from data cleaning to heterogeneous treatment effects, with each modelling choice justified in the analysis: why mixed effects, why GAMs, why weighting. Treatment-effect estimates from observational data depend on unconfoundedness assumptions that cannot be verified here, and the data is synthetic, so I present this as a demonstration of method rather than as evidence about which strategy to adopt.</p>
+            <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/climate-causal-analysis">R Markdown analysis on GitHub</a>. The dataset file is not included, and the written report is not published.</p>
+          </div>
+          <div class="row2__side">
+            <div class="table-scroll">
+              <table class="datatable">
+                <caption>Why each method was chosen</caption>
+                <thead><tr><th>Situation</th><th>Method</th></tr></thead>
+                <tbody>
+                  <tr><td>Observations nested in crops, regions and countries</td><td>Mixed-effects models, to respect the hierarchy and give valid standard errors</td></tr>
+                  <tr><td>Climate effects not linear</td><td>Generalized additive models, which fit smooth curves</td></tr>
+                  <tr><td>Strategies not randomly assigned</td><td>Propensity-score weighting, to balance confounders</td></tr>
+                  <tr><td>Effects may differ by crop and region</td><td>Causal forests, for heterogeneous treatment effects</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="next"><a href="../student-retention/">Previous: student retention</a><a href="../bayesian-network-crf/">Next: Bayesian network and CRF</a></div>
     </div>
   </main>
 

@@ -37,51 +37,130 @@
   <main id="main" class="paper">
     <div class="wrap">
       <p class="crumbs"><a href="../../">Home</a> / Projects / Student retention</p>
+      <div class="paper__head">
+        <div class="paper__title">
       <h1>Predicting student dropout with a multi-model approach</h1>
       <p class="paper__byline">2026. Individual project. Python, scikit-learn, XGBoost.</p>
-
+      <p class="linkrow"><a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/student-retention-prediction">Notebook, script and data on GitHub</a></p>
+        </div>
       <dl class="facts facts--paper">
         <div><dt>Records</dt><dd>4,424<small>36 features, one higher-education institution</small></dd></div>
         <div><dt>Best model</dt><dd>XGBoost<small>78.5% test accuracy (885 held-out students)</small></dd></div>
         <div><dt>Dropout class</dt><dd>0.79 recall, 0.80 F1<small>Enrolled class is weakest: 0.37 recall</small></dd></div>
       </dl>
-
-      <div class="prose" style="margin-top:2.5rem">
-        <h2><span class="sec">01</span>Question</h2>
-        <p>Which factors are associated with student dropout, can students be grouped meaningfully for targeted retention programmes, and how well can dropout be predicted early enough to act on? The data is the public UCI "predict students' dropout and academic success" dataset, collected at a Portuguese higher-education institution; the three outcomes are Dropout, Enrolled and Graduate.</p>
-
-        <h2><span class="sec">02</span>Method</h2>
-        <ul>
-          <li><strong>Exploration and testing.</strong> Distribution and outlier checks, then chi-square tests for categorical variables and ANOVA for numeric ones, to find which variables relate to outcome rather than assuming it.</li>
-          <li><strong>Segmentation.</strong> KMeans produced three student personas, and PCA produced an "academic intensity" feature, both added as model inputs.</li>
-          <li><strong>Models.</strong> Logistic Regression as a baseline, Random Forest, and XGBoost (tree depth limited to 5 to restrain overfitting), compared with 10-fold cross-validation and then once on a held-out test set. The notebook also runs a paired t-test on the fold scores to compare the baseline with XGBoost.</li>
-        </ul>
-
-        <h2><span class="sec">03</span>Results</h2>
-        <div class="table-scroll">
-          <table class="datatable">
-            <caption>Cross-validation and hold-out accuracy</caption>
-            <thead><tr><th>Model</th><th>10-fold CV accuracy</th><th>Test accuracy</th><th>Test weighted F1</th></tr></thead>
-            <tbody>
-              <tr><td>Logistic Regression (baseline)</td><td>0.759 &plusmn; 0.018</td><td>0.774</td><td>0.758</td></tr>
-              <tr><td>Random Forest</td><td>0.763 &plusmn; 0.021</td><td>0.774</td><td>0.753</td></tr>
-              <tr><td>XGBoost</td><td>0.774 &plusmn; 0.025</td><td>0.785</td><td>0.771</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>XGBoost was best on every metric, but the margin over the linear baseline is about one percentage point of accuracy, and it is comparable to the fold-to-fold spread. On the hold-out set it finds 79% of eventual dropouts (F1 0.80) and 93% of graduates (F1 0.87). It struggles with students still enrolled (recall 0.37, F1 0.45), who sit between the other two groups.</p>
-        <p>The strongest predictors were the number of curricular units approved and whether tuition fees were up to date, followed by units enrolled and scholarship status: academic progress and financial stability.</p>
-
-        <h2><span class="sec">04</span>Limitations</h2>
-        <ul>
-          <li>One institution's data; nothing here shows the model transfers to other universities or years.</li>
-          <li>Because units approved is the top predictor, much of the signal arrives only after a student has already struggled. It supports intervention only where those features are available early.</li>
-          <li>The report includes an ethical reflection on using predictions about individual students; any deployment would need that discussion first.</li>
-        </ul>
-
-        <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/student-retention-prediction">notebook, script and data on GitHub</a>. The written report is not published.</p>
-        <div class="next"><a href="../tree-diameter-estimation/">Previous: thesis</a><a href="../climate-causal-analysis/">Next: climate analysis</a></div>
       </div>
+
+      <div class="rows2">
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">01</span>Question</h2>
+            <p>Which factors are associated with student dropout, can students be grouped meaningfully for targeted retention programmes, and how well can dropout be predicted early enough to act on? The data is the public UCI "predict students' dropout and academic success" dataset, collected at a Portuguese higher-education institution; the three outcomes are Dropout, Enrolled and Graduate.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/ret-outcomes.webp" width="1000" height="541" loading="lazy" alt="Bar chart of the number of students per outcome: Graduate about 2,200, Dropout about 1,400 and Enrolled about 800."><figcaption><b>Outcomes.</b> Graduates are the largest group, then dropouts, then students still enrolled.</figcaption></div>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">02</span>Method</h2>
+            <ul>
+              <li><strong>Exploration and testing.</strong> Distribution and outlier checks, then chi-square tests for categorical variables and ANOVA for numeric ones, to find which variables relate to outcome rather than assuming it.</li>
+              <li><strong>Segmentation.</strong> KMeans produced three student personas, and PCA produced an "academic intensity" feature, both added as model inputs.</li>
+              <li><strong>Models.</strong> Logistic Regression as a baseline, Random Forest, and XGBoost (tree depth limited to 5 to restrain overfitting), compared with 10-fold cross-validation and then once on a held-out test set. The notebook also runs a paired t-test on the fold scores to compare the baseline with XGBoost.</li>
+            </ul>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/ret-tuition.webp" width="850" height="544" loading="lazy" alt="Stacked bars of outcome proportions by tuition fee status. When fees are not up to date, about 86 percent of students dropped out; when fees are up to date, about a quarter did."><figcaption><b>Tuition status.</b> About 86% of students whose fees were not up to date (0) dropped out, against about a quarter of those who were up to date (1).</figcaption></div>
+            </figure>
+            
+          </div>
+        </section>
+        <section class="row2 row2--sub">
+          <div class="prose">
+            <h3>Segmenting the students</h3>
+            <p>KMeans grouped students into three personas, and PCA produced an "academic intensity" feature; both were added to the models as inputs. The silhouette score, which measures how cleanly clusters separate, peaks at two and three clusters at about 0.33 and falls sharply from four, so three clusters were used.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/ret-silhouette.webp" width="703" height="473" loading="lazy" alt="Line chart of silhouette score against number of clusters from 2 to 10. The score is highest, about 0.33, at 2 and 3 clusters and drops sharply from 4."><figcaption><b>Choosing k.</b> Silhouette score is highest, about 0.33, at two and three clusters; three personas were used.</figcaption></div>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">03</span>Results</h2>
+            <div class="table-scroll">
+              <table class="datatable">
+                <caption>Cross-validation and hold-out accuracy</caption>
+                <thead><tr><th>Model</th><th>10-fold CV accuracy</th><th>Test accuracy</th><th>Test weighted F1</th></tr></thead>
+                <tbody>
+                  <tr><td>Logistic Regression (baseline)</td><td>0.759 &plusmn; 0.018</td><td>0.774</td><td>0.758</td></tr>
+                  <tr><td>Random Forest</td><td>0.763 &plusmn; 0.021</td><td>0.774</td><td>0.753</td></tr>
+                  <tr><td>XGBoost</td><td>0.774 &plusmn; 0.025</td><td>0.785</td><td>0.771</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>XGBoost was best on every metric, but the margin over the linear baseline is about one percentage point of accuracy, and it is comparable to the fold-to-fold spread. On the hold-out set it finds 79% of eventual dropouts (F1 0.80) and 93% of graduates (F1 0.87). It struggles with students still enrolled (recall 0.37, F1 0.45), who sit between the other two groups.</p>
+            
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/ret-cv-boxplot.webp" width="858" height="529" loading="lazy" alt="Box plots of 10-fold cross-validated accuracy for Logistic Regression, Random Forest and XGBoost; the three distributions overlap, with XGBoost slightly higher."><figcaption><b>Cross-validation.</b> The three models' accuracy distributions overlap; XGBoost sits slightly higher.</figcaption></div>
+            </figure>
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/ret-confusion.webp" width="687" height="553" loading="lazy" alt="Confusion matrix for XGBoost on 885 held-out students. Dropout: 223 correct, 30 predicted Enrolled, 31 predicted Graduate. Enrolled: 59 correct, 36 predicted Dropout, 64 predicted Graduate. Graduate: 413 correct, 17 predicted Dropout, 12 predicted Enrolled."><figcaption><b>Hold-out confusion matrix.</b> Enrolled students are most often mistaken for graduates.</figcaption></div>
+            </figure>
+            
+          </div>
+        </section>
+        <section class="row2 row2--sub">
+          <div class="prose">
+            <h3>What predicts dropout</h3>
+            <p>The strongest predictors were the number of curricular units approved and whether tuition fees were up to date, followed by units enrolled and scholarship status: academic progress and financial stability.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/ret-importance.webp" width="1000" height="491" loading="lazy" alt="Bar chart of the 15 most important XGBoost features. Total approved units is highest, then tuition fees up to date, total enrolled units, scholarship holder and academic intensity."><figcaption><b>Top predictors.</b> Units approved leads, followed by tuition status.</figcaption></div>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">04</span>Limitations</h2>
+            <ul>
+              <li>One institution's data; nothing here shows the model transfers to other universities or years.</li>
+              <li>Because units approved is the top predictor, much of the signal arrives only after a student has already struggled. It supports intervention only where those features are available early.</li>
+              <li>The report includes an ethical reflection on using predictions about individual students; any deployment would need that discussion first.</li>
+            </ul>
+            <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/student-retention-prediction">notebook, script and data on GitHub</a>. The written report is not published.</p>
+          </div>
+          <div class="row2__side">
+            <div class="table-scroll">
+              <table class="datatable">
+                <caption>Reproducibility check: report versus re-run (xgboost 2.1.4)</caption>
+                <thead><tr><th>Measure</th><th>Report</th><th>Re-run</th></tr></thead>
+                <tbody>
+                  <tr><td>Baseline CV accuracy</td><td>0.759</td><td>0.759</td></tr>
+                  <tr><td>Random Forest CV accuracy</td><td>0.763</td><td>0.763</td></tr>
+                  <tr><td>XGBoost CV accuracy</td><td>0.774</td><td>0.774</td></tr>
+                  <tr><td>XGBoost test accuracy</td><td>0.785</td><td>0.780</td></tr>
+                  <tr><td>Dropout recall</td><td>0.79</td><td>0.79</td></tr>
+                  <tr><td>Enrolled recall</td><td>0.37</td><td>0.33</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="aside-note"><b>Why show this.</b> Re-running the published notebook today reproduces the baseline and Random Forest exactly, and XGBoost to within about half a percentage point. The small gap is expected across XGBoost versions and is within the cross-validation spread, so the conclusions hold.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="next"><a href="../tree-diameter-estimation/">Previous: thesis</a><a href="../climate-causal-analysis/">Next: climate analysis</a></div>
     </div>
   </main>
 

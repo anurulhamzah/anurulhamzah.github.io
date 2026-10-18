@@ -37,29 +37,103 @@
   <main id="main" class="paper">
     <div class="wrap">
       <p class="crumbs"><a href="../../">Home</a> / Projects / Bayesian network and CRF</p>
+      <div class="paper__head">
+        <div class="paper__title">
       <h1>Risk modeling and event classification with Bayesian networks and CRFs</h1>
       <p class="paper__byline">2026. Team of three. Python, pgmpy, sklearn-crfsuite.</p>
-
+      <p class="linkrow"><a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/bayesian-network-and-crf">Notebook on GitHub</a></p>
+        </div>
       <dl class="facts facts--paper">
         <div><dt>Part A</dt><dd>27-node Bayesian network<small>"insurance" benchmark, sensitivity analysis on its probability tables</small></dd></div>
         <div><dt>Part B</dt><dd>0.97 weighted F1<small>CRF event tagging, held-out test set</small></dd></div>
         <div><dt>Overfitting check</dt><dd>F1 0.972 / 0.970 / 0.965<small>train / validation / test, second run</small></dd></div>
       </dl>
-
-      <div class="prose" style="margin-top:2.5rem">
-        <h2><span class="sec">01</span>Part A: how a risk shift propagates through a Bayesian network</h2>
-        <p>The model is the standard "insurance" benchmark network, a directed acyclic graph of 27 nodes linking socioeconomic factors and age to driver traits, accident likelihood, and the costs that follow. The task was a sensitivity analysis: change the conditional probability distributions of chosen nodes to reflect different scenarios, run inference, and trace how the change spreads to related nodes.</p>
-        <p>With pgmpy the team defined scenarios and edited the probability tables to match them: a higher probability of severe accidents, more vehicle theft in dense Indonesian cities, and a more realistic repair-cost table (in the original, a severe accident almost deterministically meant a repair cost in the million range, 97%). For each scenario the team re-ran inference and compared the affected cost nodes with the baseline. The write-up concludes, for example, that a moderate rise in severe accidents significantly increases medical and repair cost exposure, and notes that the benchmark reflects a generic insurance setting that ignores regional and emerging socioeconomic risks.</p>
-
-        <h2><span class="sec">02</span>Part B: tagging financial events in text with a CRF</h2>
-        <p>A Conditional Random Field labels each token of a document as the beginning or continuation of one of four event types (merger, acquisition, earnings, stock movement) or as a non-event token, which makes the task a sequence-labelling problem where neighbouring labels matter. The input features were word and part-of-speech information from a window of neighbouring tokens, plus keyword features for each event type.</p>
-        <p>On the held-out test set the model reached a weighted F1 of 0.974. Token-level accuracy is flattered by the large "other" class, so the team read per-class scores alongside it. A second, systematic comparison of hyperparameter settings split the data into train, validation and test sets and compared F1 across them (0.972, 0.970, 0.965), to check that the model was not simply memorising the training data. The small train-test gap suggests it was not.</p>
-
-        <h2><span class="sec">03</span>My role</h2>
-        <p>This was a team of three. The submitted work is a joint report; the repository history does not break down who wrote which part, so I describe the project as collaborative and have not claimed individual credit for any one section.</p>
-        <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/bayesian-network-and-crf">notebook on GitHub</a>. Input data and the written report are not published.</p>
-        <div class="next"><a href="../climate-causal-analysis/">Previous: climate analysis</a><a href="../food-security-dashboard/">Next: food security dashboard</a></div>
       </div>
+
+      <div class="rows2">
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">01</span>Part A: how a risk shift propagates through a Bayesian network</h2>
+            <p>The model is the standard "insurance" benchmark network, a directed acyclic graph of 27 nodes linking socioeconomic factors and age to driver traits, accident likelihood, and the costs that follow. The task was a sensitivity analysis: change the conditional probability distributions of chosen nodes to reflect different scenarios, run inference, and trace how the change spreads to related nodes.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/bn-network.webp" width="1000" height="795" loading="lazy" alt="Graph of the 27-node insurance Bayesian network. Nodes are coloured by group: driver characteristics, socioeconomic factors, vehicle characteristics, accident and damage, costs and financial impact, and theft and security."><figcaption><b>The network.</b> The 27-node "insurance" benchmark, nodes coloured by group (from the notebook).</figcaption></div>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2 row2--sub">
+          <div class="prose">
+            <h3>Scenario 1: more severe accidents</h3>
+            <p>With pgmpy the team defined scenarios and edited the probability tables to match them: a higher probability of severe accidents, more vehicle theft in dense Indonesian cities, and a more realistic repair-cost table (in the original, a severe accident almost deterministically meant a repair cost in the million range, 97%). For each scenario the team re-ran inference and compared the affected cost nodes with the baseline.</p>
+            <p>The write-up concludes, for example, that a moderate rise in severe accidents significantly increases medical and repair cost exposure.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/bn-severity-medcost.webp" width="989" height="589" loading="lazy" alt="Bar chart of medical cost probabilities, baseline versus a severe-accident scenario. The thousand band falls from 95.00 to 71.25 percent; the ten-thousand band rises from 4.00 to 13.10; the hundred-thousand band from 0.90 to 10.99; the million band from 0.10 to 4.67."><figcaption><b>Medical cost.</b> The chance that medical cost stays in the "thousand" band falls from 95.0% to 71.3%; the "million" band rises from 0.1% to 4.7%.</figcaption></div>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2 row2--sub">
+          <div class="prose">
+            <h3>Scenario 2: an Indonesian urban setting</h3>
+            <p>The second scenario models a significant rise in vehicle theft in high-density Indonesian cities. Total property damage shifts toward the higher cost bands. The write-up also notes that the benchmark reflects a generic insurance setting that ignores regional and emerging socioeconomic risks.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure">
+              <div class="plate"><img src="../../assets/img/bn-property-urban.webp" width="989" height="589" loading="lazy" alt="Bar chart of total property damage probabilities, baseline versus an Indonesian urban scenario. The thousand band falls from 75.00 to 53.38 percent; the million band rises from 2.00 to 14.07 percent."><figcaption><b>Property damage.</b> The "thousand" band falls from 75.0% to 53.4%, and the "million" band rises from 2.0% to 14.1%.</figcaption></div>
+            </figure>
+          </div>
+        </section>
+
+        <section class="row2">
+          <div class="prose">
+            <h2><span class="sec">02</span>Part B: tagging financial events in text with a CRF</h2>
+            <p>A Conditional Random Field labels each token of a document as the beginning or continuation of one of four event types (merger, acquisition, earnings, stock movement) or as a non-event token, which makes the task a sequence-labelling problem where neighbouring labels matter. The input features were word and part-of-speech information from a window of neighbouring tokens, plus keyword features for each event type.</p>
+            <p>On the held-out test set the model reached a weighted F1 of 0.974. Token-level accuracy is flattered by the large "other" class, so the team read per-class scores alongside it. A second, systematic comparison of hyperparameter settings split the data into train, validation and test sets and compared F1 across them (0.972, 0.970, 0.965), to check that the model was not simply memorising the training data. The small train-test gap suggests it was not.</p>
+            <h3>My role</h3>
+            <p>This was a team of three. The submitted work is a joint report; the repository history does not break down who wrote which part, so I describe the project as collaborative and have not claimed individual credit for any one section.</p>
+            <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/bayesian-network-and-crf">notebook on GitHub</a>. Input data and the written report are not published.</p>
+          </div>
+          <div class="row2__side">
+            <figure class="figure chart">
+              <!-- chart:crf -->
+<svg viewBox="0 0 480 218" role="img" aria-labelledby="t-crf d-crf">
+<title id="t-crf">Weighted F1 of the CRF by data split</title>
+<desc id="d-crf">Dot plot of weighted F1: 0.9715 on training, 0.9698 on validation and 0.9650 on test data. The axis runs from 0.95 to 0.98.</desc>
+<line class="s-rule" x1="110.0" x2="110.0" y1="22" y2="178" stroke-width="1"/>
+<text x="110.0" y="194" text-anchor="middle">0.95</text>
+<line class="s-rule" x1="220.0" x2="220.0" y1="22" y2="178" stroke-width="1"/>
+<text x="220.0" y="194" text-anchor="middle">0.96</text>
+<line class="s-rule" x1="330.0" x2="330.0" y1="22" y2="178" stroke-width="1"/>
+<text x="330.0" y="194" text-anchor="middle">0.97</text>
+<line class="s-rule" x1="440.0" x2="440.0" y1="22" y2="178" stroke-width="1"/>
+<text x="440.0" y="194" text-anchor="middle">0.98</text>
+<text x="275.0" y="212" text-anchor="middle">weighted F1 (axis starts at 0.95)</text>
+<text x="96" y="56.0" text-anchor="end">Train</text>
+<line class="s-ink" x1="110.0" x2="346.5" y1="52.0" y2="52.0" stroke-width="1.5"/>
+<circle class="c-canopy" cx="346.5" cy="52.0" r="6"/>
+<text class="c-strong" x="358.5" y="56.0">0.9715</text>
+<text x="96" y="100.0" text-anchor="end">Validation</text>
+<line class="s-ink" x1="110.0" x2="327.8" y1="96.0" y2="96.0" stroke-width="1.5"/>
+<circle class="c-canopy" cx="327.8" cy="96.0" r="6"/>
+<text class="c-strong" x="339.8" y="100.0">0.9698</text>
+<text x="96" y="144.0" text-anchor="end">Test</text>
+<line class="s-ink" x1="110.0" x2="275.0" y1="140.0" y2="140.0" stroke-width="1.5"/>
+<circle class="c-tape" cx="275.0" cy="140.0" r="6"/>
+<text class="c-strong" x="287.0" y="144.0">0.9650</text>
+</svg>
+<!-- /chart:crf -->
+              <figcaption><b>Overfitting check.</b> Weighted F1 of the CRF on the three splits in the second run (values from the report). The gap between training and test is 0.0065.</figcaption>
+            </figure>
+            <p class="aside-note"><b>Reading the score.</b> Most tokens are not events, so overall accuracy looks high almost by default. The weighted F1 and the per-class scores in the notebook are the fairer measures.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="next"><a href="../climate-causal-analysis/">Previous: climate analysis</a><a href="../food-security-dashboard/">Next: food security dashboard</a></div>
     </div>
   </main>
 
