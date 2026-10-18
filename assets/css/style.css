@@ -355,3 +355,10 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 .more a:hover b { text-decoration: underline; text-decoration-color: var(--tape); text-decoration-thickness: 2px; }
 .more b { font-weight: 700; font-stretch: 92%; }
 .more span { font-size: var(--step--1); color: var(--ink-2); max-width: 62ch; }
+
+/* two-column project pages: text left, screens right */
+.split { display: grid; gap: 2rem clamp(1.5rem, 4vw, 3.5rem); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) { .split { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; } }
+.split .prose p, .split .prose ul { max-width: none; }
+.split__side .figure { margin: 0 0 1.25rem; }
+.split__side .plate { padding: 0.4rem; }

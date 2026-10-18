@@ -47,7 +47,8 @@
         <div><dt>Projections</dt><dd>To 2030<small>against 2030 goals: IKP 85, stunting 14%, PoU 5%</small></dd></div>
       </dl>
 
-      <div class="prose" style="margin-top:2.5rem">
+      <div class="split" style="margin-top:2.5rem">
+      <div class="prose">
         <h2><span class="sec">01</span>Who it is for and what it answers</h2>
         <p>The dashboard is designed for policymakers, regional planners, public-health officials and analysts working on food security. It was built around three questions: which regions are priorities and what drives their vulnerability, how have trends changed and how do they compare globally, and which regions are on track to meet 2030 goals (a food security index of 85, stunting of 14% following the WHO target, and undernourishment of 5%, the zero-hunger level).</p>
 
@@ -61,7 +62,15 @@
           <li><strong>Future projections.</strong> ARIMA forecasts of the food security index, stunting and undernourishment for 2025-2030, with 80% and 95% confidence bands, flagging regions at risk of missing the 2030 goals.</li>
           <li><strong>System status.</strong> Data-quality checks and an error log.</li>
         </ul>
-        <p>Three of the tabs, from the live app (select an image to open it):</p>
+
+        <h2><span class="sec">03</span>Design and data decisions</h2>
+        <p>The interface follows the Five Design Sheets framework, from raw data through to the final layout, so that each tab has a clear purpose and a consistent visual hierarchy for different audiences. The team fixed problems found during testing and cross-checked them in Shiny: zeros in the stunting and undernourishment data were recoded as missing values, with conditional rendering so that charts do not average over missing data, and a projection chart title and axis range that disagreed were corrected.</p>
+
+        <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/food-security-dashboard">Shiny app and user guide on GitHub</a>. Live: <a href="https://anurulhamzah.shinyapps.io/food-security-dashboard-indonesia/" rel="noopener">anurulhamzah.shinyapps.io</a> (free plan, so the first load after idle can take about ten seconds). The datasets are bundled with the hosted app only, not in the repository. This was a team project; the report does not attribute individual contributions.</p>
+        <div class="next"><a href="../bayesian-network-crf/">Previous: Bayesian network and CRF</a><a href="../../#work">Back to projects</a></div>
+      </div>
+      <div class="split__side">
+        <p class="small" style="margin-top:0">Three of the tabs, from the live app (select an image to open it):</p>
         <figure class="figure">
           <div class="plate">
             <a href="https://anurulhamzah.shinyapps.io/food-security-dashboard-indonesia/" rel="noopener" aria-label="Open the live dashboard">
@@ -86,13 +95,8 @@
             <figcaption><b>Future projections.</b> ARIMA forecast for Indonesia to 2030 with 80% and 95% confidence bands and the 2030 goal.</figcaption>
           </div>
         </figure>
-
-        <h2><span class="sec">03</span>Design and data decisions</h2>
-        <p>The interface follows the Five Design Sheets framework, from raw data through to the final layout, so that each tab has a clear purpose and a consistent visual hierarchy for different audiences. The team fixed problems found during testing and cross-checked them in Shiny: zeros in the stunting and undernourishment data were recoded as missing values, with conditional rendering so that charts do not average over missing data, and a projection chart title and axis range that disagreed were corrected.</p>
-
-        <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/food-security-dashboard">Shiny app and user guide on GitHub</a>. Live: <a href="https://anurulhamzah.shinyapps.io/food-security-dashboard-indonesia/" rel="noopener">anurulhamzah.shinyapps.io</a> (free plan, so the first load after idle can take about ten seconds). The datasets are bundled with the hosted app only, not in the repository. This was a team project; the report does not attribute individual contributions.</p>
-        <div class="next"><a href="../bayesian-network-crf/">Previous: Bayesian network and CRF</a><a href="../../#work">Back to projects</a></div>
       </div>
+    </div>
     </div>
   </main>
 
