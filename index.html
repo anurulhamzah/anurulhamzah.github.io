@@ -240,8 +240,24 @@
           <h2 id="approach-title">How I work, from raw data to results</h2>
         </div>
         <p class="section__intro" style="margin-bottom:2rem">The stages my projects follow, each with an example from the work itself.</p>
-        <ol class="pipe">
-          <li class="pipe__row">
+        <div class="flow7" data-flow>
+          <div class="flow7__groups" aria-hidden="true">
+            <span style="grid-column:1 / 4">Trust the data</span>
+            <span style="grid-column:4 / 6">Build a fair test</span>
+            <span style="grid-column:6 / 8">Report what holds</span>
+          </div>
+          <div class="flow7__rail" role="tablist" aria-label="Stages of my workflow">
+            <button type="button" role="tab" id="tab-pipe-1" aria-controls="pipe-1" aria-selected="true" tabindex="0" class="flow7__stop"><span class="flow7__dot">01</span><span class="flow7__name">Acquire</span><span class="flow7__fig">13 species</span></button>
+            <button type="button" role="tab" id="tab-pipe-2" aria-controls="pipe-2" aria-selected="false" tabindex="-1" class="flow7__stop"><span class="flow7__dot">02</span><span class="flow7__name">Audit</span><span class="flow7__fig">every image checked</span></button>
+            <button type="button" role="tab" id="tab-pipe-3" aria-controls="pipe-3" aria-selected="false" tabindex="-1" class="flow7__stop"><span class="flow7__dot">03</span><span class="flow7__name">Clean</span><span class="flow7__fig">416 masks fixed</span></button>
+            <button type="button" role="tab" id="tab-pipe-4" aria-controls="pipe-4" aria-selected="false" tabindex="-1" class="flow7__stop"><span class="flow7__dot">04</span><span class="flow7__name">Prepare</span><span class="flow7__fig">split by scene</span></button>
+            <button type="button" role="tab" id="tab-pipe-5" aria-controls="pipe-5" aria-selected="false" tabindex="-1" class="flow7__stop"><span class="flow7__dot">05</span><span class="flow7__name">Model</span><span class="flow7__fig">6 backbones, 2 baselines</span></button>
+            <button type="button" role="tab" id="tab-pipe-6" aria-controls="pipe-6" aria-selected="false" tabindex="-1" class="flow7__stop"><span class="flow7__dot">06</span><span class="flow7__name">Evaluate</span><span class="flow7__fig">recall 82% to 35%</span></button>
+            <button type="button" role="tab" id="tab-pipe-7" aria-controls="pipe-7" aria-selected="false" tabindex="-1" class="flow7__stop"><span class="flow7__dot">07</span><span class="flow7__name">Communicate</span><span class="flow7__fig">27% coverage stated</span></button>
+          </div>
+        </div>
+        <ol class="pipe" data-pipe>
+          <li class="pipe__row is-active" id="pipe-1" role="tabpanel" aria-labelledby="tab-pipe-1">
             <span class="pipe__no">01</span>
             <div class="pipe__what"><h3>Acquire</h3><p>Know where the data comes from and what it cannot say.</p></div>
             <ul class="pipe__proof">
@@ -250,7 +266,7 @@
               <li>Food security: regency-level indicators combined with global index data and agricultural subsidy figures (<a href="projects/food-security-dashboard/">case study</a>).</li>
             </ul>
           </li>
-          <li class="pipe__row">
+          <li class="pipe__row" id="pipe-2" role="tabpanel" aria-labelledby="tab-pipe-2">
             <span class="pipe__no">02</span>
             <div class="pipe__what"><h3>Audit</h3><p>Check the data before trusting a model built on it.</p></div>
             <ul class="pipe__proof">
@@ -259,7 +275,7 @@
               <li>Food security: zeros in the stunting and undernourishment columns were found to be missing values.</li>
             </ul>
           </li>
-          <li class="pipe__row">
+          <li class="pipe__row" id="pipe-3" role="tabpanel" aria-labelledby="tab-pipe-3">
             <span class="pipe__no">03</span>
             <div class="pipe__what"><h3>Clean</h3><p>Fix it, keep the original, measure the effect.</p></div>
             <ul class="pipe__proof">
@@ -268,7 +284,7 @@
               <li>Missing, dirty and outlier values, and text parsing, in <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/data-cleaning-missing-dirty-outlier">two</a> <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/text-data-wrangling-pipeline">wrangling projects</a>.</li>
             </ul>
           </li>
-          <li class="pipe__row">
+          <li class="pipe__row" id="pipe-4" role="tabpanel" aria-labelledby="tab-pipe-4">
             <span class="pipe__no">04</span>
             <div class="pipe__what"><h3>Prepare</h3><p>Build the split so the test is honest.</p></div>
             <ul class="pipe__proof">
@@ -277,7 +293,7 @@
               <li>Retention: a held-out set of 885 students, scored once (<a href="projects/student-retention/">case study</a>).</li>
             </ul>
           </li>
-          <li class="pipe__row">
+          <li class="pipe__row" id="pipe-5" role="tabpanel" aria-labelledby="tab-pipe-5">
             <span class="pipe__no">05</span>
             <div class="pipe__what"><h3>Model</h3><p>Start from a baseline and change one thing at a time.</p></div>
             <ul class="pipe__proof">
@@ -286,7 +302,7 @@
               <li>Climate: mixed-effects models, then GAMs, a Random Forest and causal forests, each chosen for a stated reason.</li>
             </ul>
           </li>
-          <li class="pipe__row">
+          <li class="pipe__row" id="pipe-6" role="tabpanel" aria-labelledby="tab-pipe-6">
             <span class="pipe__no">06</span>
             <div class="pipe__what"><h3>Evaluate</h3><p>Measure what would be deployed, and where it fails.</p></div>
             <ul class="pipe__proof">
@@ -295,7 +311,7 @@
               <li>Bayesian and CRF project: F1 on training, validation and test data to check for overfitting (<a href="projects/bayesian-network-crf/">case study</a>).</li>
             </ul>
           </li>
-          <li class="pipe__row">
+          <li class="pipe__row" id="pipe-7" role="tabpanel" aria-labelledby="tab-pipe-7">
             <span class="pipe__no">07</span>
             <div class="pipe__what"><h3>Communicate</h3><p>Say what the result does and does not show.</p></div>
             <ul class="pipe__proof">
