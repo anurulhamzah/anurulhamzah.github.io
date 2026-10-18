@@ -101,6 +101,15 @@ def check(path: Path):
     for kind, ref in p.refs:
         if ref.startswith(("mailto:", "tel:", "javascript:")):
             continue
+        m = re.search(r"assets/(?:css|js)/[^?\"]+", ref)
+        if m and not ref.startswith(("http://", "https://")):
+            import hashlib
+            base = ROOT if path.name == "404.html" else path.parent
+            asset = (base / ref.split("?")[0]).resolve()
+            want = hashlib.sha256(asset.read_bytes()).hexdigest()[:8] if asset.exists() else None
+            got = re.search(r"\?v=([0-9a-f]+)", ref)
+            if want and (not got or got.group(1) != want):
+                problems.append(f"{rel}: stale or missing cache stamp on {ref} (run python tools/stamp_assets.py)")
         if re.match(r"https?://", ref):
             externals.setdefault(ref, []).append(rel)
             continue

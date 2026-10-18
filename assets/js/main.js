@@ -42,6 +42,11 @@
   var rail = document.querySelector("[data-flow]");
   var list = document.querySelector("[data-pipe]");
   if (!rail || !list) return;
+  // The rail ships hidden. Reveal it only if its stylesheet rules are present, so a stale or missing
+  // stylesheet degrades to the plain list instead of showing unstyled buttons.
+  var probe = rail.querySelector(".flow7__rail");
+  if (!probe || window.getComputedStyle(probe).display !== "grid") return;
+  rail.hidden = false;
   var tabs = Array.prototype.slice.call(rail.querySelectorAll("[role=tab]"));
   var panels = Array.prototype.slice.call(list.querySelectorAll("[role=tabpanel]"));
   var wide = window.matchMedia("(min-width: 900px)");
