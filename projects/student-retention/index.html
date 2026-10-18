@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://anurulhamzah.github.io/projects/student-retention/">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="../../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../../assets/css/style.css?v=d99c9bde">
+  <link rel="stylesheet" href="../../assets/css/style.css?v=1a0fa28e">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Student retention and dropout prediction">
   <meta property="og:description" content="A multi-model approach to predicting student dropout, with an honest look at where it is weakest.">
@@ -25,10 +25,10 @@
     <div class="wrap">
       <a class="brand" href="../../">A. Fauzi <span>Nurulhamzah</span></a>
       <nav class="nav" aria-label="Primary">
-        <a href="../../#thesis">Thesis</a>
-        <a href="../../#work" aria-current="page">Projects</a>
+        <a href="../../#thesis">Research</a>
+        <a href="../../#work" aria-current="page">Work</a>
         <a href="../../#about">About</a>
-        <a href="../../#experience">Experience</a>
+        <a href="../../assets/cv/Akhmad-Fauzi-Nurulhamzah-CV.pdf" download>CV</a>
         <a href="../../#contact">Contact</a>
       </nav>
     </div>
@@ -50,6 +50,7 @@
       </dl>
       </div>
 
+      <p class="tldr"><b>In short.</b> Which students are likely to drop out, and what separates them from those who graduate? Using 4,424 records, XGBoost finds about 79% of eventual dropouts among held-out students. The strongest signals are how many course units a student has passed and whether tuition is up to date. A model like this could help decide whom to contact early; this project did not test whether outreach would change outcomes.</p>
       <div class="rows2">
         <section class="row2">
           <div class="prose">
@@ -141,6 +142,7 @@
             <p class="verify">Code: <a href="https://github.com/anurulhamzah/data-analytics-projects/tree/main/student-retention-prediction">notebook, script and data on GitHub</a>. The written report is not published.</p>
           </div>
           <div class="row2__side">
+            <details class="repro"><summary>Reproducibility check: report versus re-run</summary>
             <div class="table-scroll">
               <table class="datatable">
                 <caption>Reproducibility check: report versus re-run (xgboost 2.1.4)</caption>
@@ -156,6 +158,7 @@
               </table>
             </div>
             <p class="aside-note"><b>Why show this.</b> Re-running the published notebook today reproduces the baseline and Random Forest exactly, and XGBoost to within about half a percentage point. The small gap is expected across XGBoost versions and is within the cross-validation spread, so the conclusions hold.</p>
+          </details>
           </div>
         </section>
       </div>

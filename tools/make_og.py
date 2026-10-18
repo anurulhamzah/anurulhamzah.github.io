@@ -1,4 +1,4 @@
-﻿"""Render the 1200x630 social preview image (assets/og-image.png).
+"""Render the 1200x630 social preview image (assets/og-image.png).
 
 Uses fonts installed with Windows (Bahnschrift, Consolas) and the scene crop in assets/img.
 Run from the repository root:  python tools/make_og.py
@@ -51,7 +51,7 @@ d.text((px, 120 + ph + 66), "species and trunk diameter (DBH)", font=mono_s, fil
 x0 = 190
 d.text((x0, 60), "AKHMAD FAUZI NURULHAMZAH", font=mono, fill=TAPE)
 y = 120
-for line in ("Machine learning", "for forest inventory,", "grounded in 12 years", "of forestry."):
+for line in ("Applied data science,", "grounded in real-world", "industry experience."):
     d.text((x0, y), line, font=bahn(64, 800, 75), fill=INK)
     y += 70
 d.text((x0, 430), "Master of Data Science", font=mono_s, fill=INK2)
