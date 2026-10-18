@@ -162,6 +162,7 @@ p { margin: 0 0 1em; max-width: var(--measure); text-wrap: pretty; }
 .plate__pair { display: grid; gap: 0.6rem; }
 .plate figcaption, .figure figcaption { font: 400 0.78rem/1.5 var(--font-mono); color: var(--ink-2); padding: 0.6rem 0.2rem 0.1rem; }
 .plate figcaption { color: #3d4c43; }
+.plate figcaption b, .figure .plate figcaption b { color: #0f1b15; }
 .tagline { position: relative; }
 .tagline::before { content: attr(data-label); position: absolute; left: 0.5rem; top: 0.5rem; background: var(--ink); color: var(--paper); font: 600 0.68rem/1 var(--font-mono); padding: 0.3rem 0.45rem; letter-spacing: 0.04em; }
 
