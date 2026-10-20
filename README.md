@@ -1,6 +1,6 @@
 # anurulhamzah.github.io
 
-Personal portfolio of Akhmad Fauzi Nurulhamzah: applied machine learning and computer vision for forest inventory, with a background in forestry operations and internal audit.
+Personal portfolio of Akhmad Fauzi Nurulhamzah: applied data science, machine learning and computer vision, with a background in forestry operations and internal audit.
 
 Plain HTML, CSS and a small amount of vanilla JavaScript. No framework, no build step for the site itself, no trackers, no paid services. Fonts (Archivo, JetBrains Mono; SIL Open Font License) are self-hosted.
 
