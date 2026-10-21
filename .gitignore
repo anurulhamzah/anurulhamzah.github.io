@@ -6,3 +6,16 @@ desktop.ini
 *.docx
 *.log
 .env
+
+# credentials and local config: never commit
+.env
+.env.*
+*.pem
+*.key
+*.p12
+id_rsa*
+.Renviron
+.Rprofile
+rsconnect/
+credentials*
+secrets.*
